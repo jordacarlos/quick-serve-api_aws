@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.quickserveapi.domain.service;
 
 import br.com.fiap.techchallenge.quickserveapi.api.model.CustomerModel;
+import br.com.fiap.techchallenge.quickserveapi.api.model.CustomerModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.api.model.input.CustomerInput;
 import br.com.fiap.techchallenge.quickserveapi.api.model.input.CustomerUpdate;
 import br.com.fiap.techchallenge.quickserveapi.domain.model.Customer;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,6 @@ public class CustomerService {
 
     @Transactional
     public Customer save(Customer customer) {
-
         try {
             return customerRepository.save(customer);
         } catch (DataIntegrityViolationException e) {
@@ -47,6 +48,16 @@ public class CustomerService {
             throw new RuntimeException(
                     String.format("Código %d não pode ser removida, pois está em uso", customerId));
         }
+    }
+
+    public Page<CustomerModelOutput> findAllWithId(Pageable paginacao) {
+        Page<Customer> customersPage = customerRepository.findAll(paginacao);
+        Page<CustomerModelOutput> customerModelPage = customersPage.map(this::toCustomerModelOutput);
+        return customerModelPage;
+    }
+
+    private CustomerModelOutput toCustomerModelOutput(Customer customer) {
+        return new CustomerModelOutput(customer.getId(), customer.getName(), customer.getEmail(), customer.getCpf());
     }
 
     public Page<CustomerModel> findAll(Pageable pageable) {
@@ -83,6 +94,17 @@ public class CustomerService {
         }
 
         return optionalCustomerModel;
+    }
+
+    public Optional<CustomerModel> findByCpf(String cpf) {
+        Optional<Customer> optionalCustomer = customerRepository.findByCpf(cpf);
+
+        if (optionalCustomer.isPresent()) {
+            CustomerModel customerModel = toCustomerModel(optionalCustomer.get());
+            return Optional.of(customerModel);
+        } else {
+            throw new RuntimeException(String.format("CPF [%s] não foi encontrado", cpf));
+        }
     }
 
     public void remove(Long id) {
@@ -129,13 +151,7 @@ public class CustomerService {
             if ( !customerUpdate.email().isBlank() ) {
                 customer.setEmail(customerUpdate.email());
             }
-
-            if ( !customerUpdate.cpf().isBlank() ) {
-                customer.setCpf(customerUpdate.cpf());
-            }
-
             return customer;
-
         }
         else {
 

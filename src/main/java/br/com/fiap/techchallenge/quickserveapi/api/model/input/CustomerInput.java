@@ -1,13 +1,18 @@
 package br.com.fiap.techchallenge.quickserveapi.api.model.input;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 public record CustomerInput (
-        @NotBlank
+        @NotBlank(message = "O Email não pode estar em branco")
         String name,
-        @NotBlank
+
+        @NotBlank(message = "O Email não pode estar em branco")
+        @Email
         String email,
 
-        @NotBlank
+        @NotBlank(message = "O CPF não pode estar em branco")
+        @Pattern(regexp = "\\d{3}\\.?\\d{3}\\.?\\d{3}\\-?\\d{2}")
         String cpf
 ){}
