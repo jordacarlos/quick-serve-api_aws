@@ -1,9 +1,8 @@
-package br.com.fiap.techchallenge.quickserveapi.api.model;
+package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record CustomerModelOutput(
-    Long id,
+public record CustomerModel (
     @NotBlank
     String name,
     @NotBlank

@@ -1,4 +1,4 @@
-package br.com.fiap.techchallenge.quickserveapi.api.model.input;
+package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

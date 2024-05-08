@@ -1,10 +1,10 @@
-package br.com.fiap.techchallenge.quickserveapi.api.controller;
+package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest;
 
-import br.com.fiap.techchallenge.quickserveapi.api.model.CustomerModel;
-import br.com.fiap.techchallenge.quickserveapi.api.model.CustomerModelOutput;
-import br.com.fiap.techchallenge.quickserveapi.api.model.input.CustomerInput;
-import br.com.fiap.techchallenge.quickserveapi.api.model.input.CustomerUpdate;
-import br.com.fiap.techchallenge.quickserveapi.domain.service.CustomerService;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModel;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModelOutput;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerInput;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerUpdate;
+import br.com.fiap.techchallenge.quickserveapi.domain.service.CustomerServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public class CustomerController {
 
     @Autowired
-    private CustomerService customerService;
+    private CustomerServiceImpl customerService;
 
     ///Cadastro de usuario
     @PostMapping
