@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.quickserveapi.domain;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerInput;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModelOutput;
 
 public class Customer {
@@ -15,6 +16,10 @@ public class Customer {
         this.name = name;
         this.email = email;
         this.cpf = cpf;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -36,6 +41,11 @@ public class Customer {
 
     public CustomerModelOutput toCustomerModelOutput(){
         return new CustomerModelOutput(this.id, this.name, this.email, this.cpf);
+
+    }
+
+    public CustomerModel toCustomerModel(){
+        return new CustomerModel(this.name, this.email, this.cpf);
 
     }
 

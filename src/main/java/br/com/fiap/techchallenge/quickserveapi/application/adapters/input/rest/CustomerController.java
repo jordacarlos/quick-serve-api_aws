@@ -4,6 +4,7 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.respon
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerUpdate;
+import br.com.fiap.techchallenge.quickserveapi.domain.ports.CustomerServicePort;
 import br.com.fiap.techchallenge.quickserveapi.domain.service.CustomerServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,17 @@ import java.util.Optional;
 @RequestMapping(path = "/quick_service/customer", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CustomerController {
 
-    @Autowired
-    private CustomerServiceImpl customerService;
+    private final CustomerServicePort customerServicePort;
+
+    public CustomerController(CustomerServicePort customerServicePort) {
+        this.customerServicePort = customerServicePort;
+    }
 
     ///Cadastro de usuario
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerModel add(@RequestBody @Valid CustomerInput customerInput) {
-        return customerService.save(customerInput);
+        return this.customerServicePort.save(customerInput);
     }
 
     /*
@@ -39,27 +43,27 @@ public class CustomerController {
 
     @GetMapping
     public Page<CustomerModelOutput> list(Pageable pageable) {
-        return customerService.findAllWithId(pageable);
+        return this.customerServicePort.findAllWithId(pageable);
     }
 
     @GetMapping("/{id}")
     public CustomerModel findByAccessKey(@PathVariable Long id) {
-        return customerService.findOrElseById(id);
+        return this.customerServicePort.findOrElseById(id);
     }
 
     @GetMapping("/auth/{cpf}")
     public Optional<CustomerModel> findByCpf(@PathVariable String cpf) {
-        return customerService.findByCpf(cpf);
+        return this.customerServicePort.findByCpf(cpf);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        customerService.remove(id);
+        this.customerServicePort.remove(id);
     }
 
     @PutMapping("/{id}")
     public CustomerModel update(@PathVariable Long id, @RequestBody @Valid CustomerUpdate customerUpdate) {
-        return customerService.update(id, customerUpdate);
+        return this.customerServicePort.update(id, customerUpdate);
     }
 }

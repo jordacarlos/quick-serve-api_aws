@@ -5,7 +5,9 @@ import br.com.fiap.techchallenge.quickserveapi.domain.Customer;
 public interface CustomerRepositoryPort {
     Customer save(Customer customer);
 
-    Customer finbdById(Long id);
+    Customer findById(Long id);
+
+    Customer findByCpf(String cpf);
 
     void deleteById(Long id);
 
