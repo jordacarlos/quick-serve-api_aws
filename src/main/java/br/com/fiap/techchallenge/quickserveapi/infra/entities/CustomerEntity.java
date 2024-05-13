@@ -1,7 +1,5 @@
 package br.com.fiap.techchallenge.quickserveapi.infra.entities;
 
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerInput;
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.domain.Customer;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -26,14 +24,11 @@ public class CustomerEntity {
     @Column(nullable = false)
     private String cpf;
 
-    public CustomerEntity(Long id, String name, String email, String cpf) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.cpf = cpf;
+    public CustomerEntity() {
     }
 
     public CustomerEntity(Customer customer) {
+        this.id = customer.getId();
         this.name = customer.getName();
         this.email = customer.getEmail();
         this.cpf = customer.getCpf();

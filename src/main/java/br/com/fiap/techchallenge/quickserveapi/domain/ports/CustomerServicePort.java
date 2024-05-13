@@ -12,17 +12,15 @@ import java.util.Optional;
 public interface CustomerServicePort {
     CustomerModel save(CustomerInput customerInput);
 
-    void delete(Long customerId);
-
     Page<CustomerModelOutput> findAllWithId(Pageable pageable);
 
     Optional<CustomerModel> findById(Long id);
 
-    Optional<CustomerModel> findByCpf(String cpf);
-
-    void remove(Long id);
+    Optional<CustomerModelOutput> findByCpf(String cpf);
 
     CustomerModel findOrElseById(Long id);
+
+    void delete(Long customerId);
 
     CustomerModel update(Long id, CustomerUpdate customerUpdate);
 }

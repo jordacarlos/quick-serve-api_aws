@@ -4,7 +4,6 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.reques
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerUpdate;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModelOutput;
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.output.repository.CustomerRepository;
 import br.com.fiap.techchallenge.quickserveapi.domain.Customer;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.CustomerRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.CustomerServicePort;
@@ -34,18 +33,6 @@ public class CustomerServiceImpl implements CustomerServicePort {
         }
     }
 
-    public void delete(Long customerId) {
-        try {
-            customerRepositoryPort.deleteById(customerId);
-        } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("Customer not found -> "+customerId);
-
-        } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException(
-                    String.format("Código %d não pode ser removida, pois está em uso", customerId));
-        }
-    }
-
     public Page<CustomerModelOutput> findAllWithId(Pageable paginacao) {
         return customerRepositoryPort.findAll(paginacao);
     }
@@ -55,26 +42,27 @@ public class CustomerServiceImpl implements CustomerServicePort {
         return Optional.of(customer.toCustomerModel());
     }
 
-    public Optional<CustomerModel> findByCpf(String cpf) {
+    public Optional<CustomerModelOutput> findByCpf(String cpf) {
         Customer customer = customerRepositoryPort.findByCpf(cpf);
-        return Optional.of(customer.toCustomerModel());
+        return Optional.of(customer.toCustomerModelOutput());
     }
 
-    public void remove(Long id) {
-        Customer customer = customerRepositoryPort.findById(id);
-        if (Objects.isNull(customer)) throw new RuntimeException(String.format("ID de acesso [%d] não encontrado", id));
-        customerRepositoryPort.deleteById(customer.getId());
+    public void delete(Long customerId) {
+        try {
+            customerRepositoryPort.deleteById(customerId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new RuntimeException("Customer not found -> "+customerId);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException(
+                    String.format("Código %d não pode ser removida, pois está em uso", customerId));
+        }
     }
 
     public CustomerModel findOrElseById(Long id) {
-
         Optional<CustomerModel> optionalCustomerModel = findById(id);
-
         if (optionalCustomerModel.isEmpty())
             throw new RuntimeException("Customer not found");
-
         return optionalCustomerModel.get();
-
     }
 
     public CustomerModel update(Long id, CustomerUpdate customerUpdate) {
@@ -88,23 +76,17 @@ public class CustomerServiceImpl implements CustomerServicePort {
         Customer customer = customerRepositoryPort.findById(id);
 
         if (Objects.nonNull(customer)) {
-
             CustomerEntity customerEntity = new CustomerEntity(customer);
-
             if (!customerUpdate.name().isBlank()) {
                 customerEntity.setName(customerUpdate.name());
             }
-
             if (!customerUpdate.email().isBlank()) {
                 customerEntity.setEmail(customerUpdate.email());
             }
             return customerEntity;
         }else {
-
             throw new RuntimeException("Customer not found");
-
         }
-
     }
 
     private CustomerModel toCustomerModel(CustomerEntity customer) {

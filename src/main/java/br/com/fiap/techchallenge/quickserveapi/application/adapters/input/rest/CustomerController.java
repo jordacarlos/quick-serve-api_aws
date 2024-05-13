@@ -5,9 +5,7 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.respon
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerUpdate;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.CustomerServicePort;
-import br.com.fiap.techchallenge.quickserveapi.domain.service.CustomerServiceImpl;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,20 +24,11 @@ public class CustomerController {
         this.customerServicePort = customerServicePort;
     }
 
-    ///Cadastro de usuario
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CustomerModel add(@RequestBody @Valid CustomerInput customerInput) {
         return this.customerServicePort.save(customerInput);
     }
-
-    /*
-    @GetMapping
-    public Page<CustomerModel> list(Pageable pageable) {
-        return customerService.findAll(pageable);
-    }
-
-     */
 
     @GetMapping
     public Page<CustomerModelOutput> list(Pageable pageable) {
@@ -52,14 +41,14 @@ public class CustomerController {
     }
 
     @GetMapping("/auth/{cpf}")
-    public Optional<CustomerModel> findByCpf(@PathVariable String cpf) {
+    public Optional<CustomerModelOutput> findByCpf(@PathVariable String cpf) {
         return this.customerServicePort.findByCpf(cpf);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        this.customerServicePort.remove(id);
+        this.customerServicePort.delete(id);
     }
 
     @PutMapping("/{id}")
