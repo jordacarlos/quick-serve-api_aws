@@ -5,16 +5,12 @@ import br.com.fiap.techchallenge.quickserveapi.domain.Customer;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.CustomerRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.CustomerEntity;
 import br.com.fiap.techchallenge.quickserveapi.infra.repositories.CustomerJPARepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component

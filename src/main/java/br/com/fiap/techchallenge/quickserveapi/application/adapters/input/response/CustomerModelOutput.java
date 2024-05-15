@@ -3,13 +3,13 @@ package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.respo
 import jakarta.validation.constraints.NotBlank;
 
 public record CustomerModelOutput(
-    Long id,
-    @NotBlank
+        Long id,
+        @NotBlank
     String name,
-    @NotBlank
+        @NotBlank
     String email,
 
-    @NotBlank
+        @NotBlank
     String cpf
 
 ){}

@@ -74,13 +74,13 @@ public class CustomerServiceImpl implements CustomerServicePort {
 
     private CustomerEntity toDomainObject(Long id, CustomerUpdate customerUpdate) {
         Customer customer = customerRepositoryPort.findById(id);
-
         if (Objects.nonNull(customer)) {
             CustomerEntity customerEntity = new CustomerEntity(customer);
-            if (!customerUpdate.name().isBlank()) {
+            if (customerUpdate.name() != null && !customerUpdate.name().isBlank()) {
                 customerEntity.setName(customerUpdate.name());
             }
-            if (!customerUpdate.email().isBlank()) {
+
+            if (customerUpdate.email() != null && !customerUpdate.email().isBlank()) {
                 customerEntity.setEmail(customerUpdate.email());
             }
             return customerEntity;
