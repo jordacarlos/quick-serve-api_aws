@@ -1,6 +1,6 @@
 package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request;
 
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.OrderStatusEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import jakarta.validation.constraints.NotBlank;
 
 public record OrderInput(

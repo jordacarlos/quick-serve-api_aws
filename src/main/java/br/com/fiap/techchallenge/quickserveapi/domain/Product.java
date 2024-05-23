@@ -2,9 +2,10 @@ package br.com.fiap.techchallenge.quickserveapi.domain;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.ProductInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.exception.CategoryNotFoundException;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
 
-import java.util.Locale;
+import java.util.Objects;
 
 public class Product {
 
@@ -50,14 +51,20 @@ public class Product {
 
 
     public Product(ProductInput input) {
+
+        CategoryEnum categoryEnum = CategoryEnum.getValidCategory(input.category().toUpperCase());
+        if (Objects.isNull(categoryEnum)){
+            throw new CategoryNotFoundException(input.category() + " Não é uma categoria válida");
+        }
+
         this.name = input.name();
-        this.category = input.category();
+        this.category = categoryEnum;
         this.price = input.price();
         this.description = input.description();
         this.imagePath = input.imagePath();
     }
 
     public ProductModel toProductModel() {
-        return new ProductModel(this.name,this.category, this.price, this.description, this.imagePath);
+        return new ProductModel(this.name,this.category.getDescricao(), this.price, this.description, this.imagePath);
     }
 }

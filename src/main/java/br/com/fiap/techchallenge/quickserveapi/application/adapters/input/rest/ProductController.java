@@ -4,7 +4,7 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.reques
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.ProductUpdate;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModelOutput;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.exception.CategoryNotFoundException;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.ProductServicePort;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(path = "/quick_service/product", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/quick_service/products", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProductController {
 
     private final ProductServicePort productServicePort;
@@ -35,8 +37,8 @@ public class ProductController {
     }
 
     @GetMapping("/{category}")
-    public String findByAccessKey(@PathVariable CategoryEnum category) {
-        return category.name();
+    public List<ProductModel> findByCategory(@PathVariable String category) throws CategoryNotFoundException {
+        return this.productServicePort.findByCategory(category);
     }
 
     @DeleteMapping("/{id}")

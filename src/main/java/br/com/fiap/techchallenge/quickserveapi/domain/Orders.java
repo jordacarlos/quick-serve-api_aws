@@ -2,7 +2,7 @@ package br.com.fiap.techchallenge.quickserveapi.domain;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.OrderInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.OrderStatusEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 
 public class Orders {
     private Long id;

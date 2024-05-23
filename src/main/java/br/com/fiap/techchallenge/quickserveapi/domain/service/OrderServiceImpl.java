@@ -3,7 +3,7 @@ package br.com.fiap.techchallenge.quickserveapi.domain.service;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.OrderInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
 import br.com.fiap.techchallenge.quickserveapi.domain.Orders;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.OrderStatusEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderServicePort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;

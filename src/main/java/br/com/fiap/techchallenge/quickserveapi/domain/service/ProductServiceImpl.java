@@ -5,8 +5,9 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.reques
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.ProductUpdate;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.exception.CategoryNotFoundException;
 import br.com.fiap.techchallenge.quickserveapi.domain.Product;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.ProductRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.ProductServicePort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.ProductEntity;
@@ -15,6 +16,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -44,11 +46,13 @@ public class ProductServiceImpl implements ProductServicePort {
         return productRepositoryPort.findAll(paginacao);
     }
 
-    public ProductModel findOrElseById(Long id) {
-        Optional<ProductModel> optionalProductModel = findById(id);
-        if (optionalProductModel.isEmpty())
-            throw new RuntimeException("Product not found");
-        return optionalProductModel.get();
+    @Override
+    public List<ProductModel> findByCategory(String category) throws CategoryNotFoundException {
+        CategoryEnum categoryEnum = CategoryEnum.getValidCategory(category.toUpperCase());
+        if (Objects.isNull(categoryEnum)){
+            throw new CategoryNotFoundException(category + " Não é uma categoria válida");
+        }
+        return productRepositoryPort.findByCategory(categoryEnum);
     }
 
     public void delete(Long productId) {
@@ -70,6 +74,12 @@ public class ProductServiceImpl implements ProductServicePort {
     }
 
     private ProductEntity toDomainObject(Long id, ProductUpdate productUpdate) {
+
+        CategoryEnum categoryEnum = CategoryEnum.getValidCategory(productUpdate.category().toUpperCase());
+        if (Objects.isNull(categoryEnum)){
+            throw new CategoryNotFoundException(productUpdate.category() + " Não é uma categoria válida");
+        }
+
         Product product = productRepositoryPort.findById(id);
 
         if (Objects.nonNull(product)) {
@@ -81,7 +91,7 @@ public class ProductServiceImpl implements ProductServicePort {
                 productEntity.setPrice(productUpdate.price());
             }
             if (productUpdate.category() != null ){
-                productEntity.setCategory(productUpdate.category());
+                productEntity.setCategory(categoryEnum);
             }
             if (productUpdate.description() != null && !productUpdate.description().isBlank() ){
                 productEntity.setDescription(productUpdate.description());
@@ -96,6 +106,6 @@ public class ProductServiceImpl implements ProductServicePort {
     }
 
     private ProductModel toProductModel(ProductEntity product) {
-        return new ProductModel(product.getName(), product.getCategory(),product.getPrice(),product.getDescription(),product.getImagePath());
+        return new ProductModel(product.getName(), product.getCategory().getDescricao(),product.getPrice(),product.getDescription(),product.getImagePath());
     }
 }

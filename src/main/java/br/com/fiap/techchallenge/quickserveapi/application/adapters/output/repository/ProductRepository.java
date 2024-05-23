@@ -1,23 +1,22 @@
 package br.com.fiap.techchallenge.quickserveapi.application.adapters.output.repository;
 
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.domain.Product;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.ProductRepositoryPort;
-import br.com.fiap.techchallenge.quickserveapi.infra.entities.CustomerEntity;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.ProductEntity;
 import br.com.fiap.techchallenge.quickserveapi.infra.repositories.ProductJPARepository;
-import org.hibernate.mapping.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class ProductRepository implements ProductRepositoryPort {
@@ -30,8 +29,8 @@ public class ProductRepository implements ProductRepositoryPort {
     @Override
     public Product save(Product product) {
         try {
-            ProductEntity ProductEntity = new ProductEntity(product);
-            return this.productJPARepository.save(ProductEntity).toProduct();
+            ProductEntity productEntity = new ProductEntity(product);
+            return this.productJPARepository.save(productEntity).toProduct();
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "%s", ex);
         }
@@ -73,14 +72,25 @@ public class ProductRepository implements ProductRepositoryPort {
         }
     }
 
+    @Override
+    public List<ProductModel> findByCategory(CategoryEnum category) {
+        List<ProductEntity> productsByCategory = this.productJPARepository.findByCategory(category);
+        List<ProductModel> productModelListResponse = new ArrayList<>();
+        if (Objects.nonNull(productsByCategory)) {
+            productModelListResponse = productsByCategory.stream().map(productEntity ->
+                    new ProductModel(
+                            productEntity.getName(),
+                            productEntity.getCategory().getDescricao(),
+                            productEntity.getPrice(),
+                            productEntity.getDescription(),
+                            productEntity.getImagePath())).toList();
+        }
+        return productModelListResponse;
+    }
 
-
-
-
-
-    private ProductModelOutput toProductModelOutput(ProductEntity Product) {
-        return new ProductModelOutput(Product.getId(), Product.getName(), Product.getCategory(),
-                Product.getDescription(), Product.getImagePath());
+    private ProductModelOutput toProductModelOutput(ProductEntity productEntity) {
+        return new ProductModelOutput(productEntity.getId(), productEntity.getName(), productEntity.getCategory().getDescricao(),
+                productEntity.getDescription(), productEntity.getImagePath());
 
     }
 }

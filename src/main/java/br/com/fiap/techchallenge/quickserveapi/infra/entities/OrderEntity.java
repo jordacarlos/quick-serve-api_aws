@@ -2,7 +2,7 @@ package br.com.fiap.techchallenge.quickserveapi.infra.entities;
 
 
 import br.com.fiap.techchallenge.quickserveapi.domain.Orders;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.OrderStatusEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

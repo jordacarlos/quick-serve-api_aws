@@ -1,6 +1,5 @@
 package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response;
 
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.CategoryEnum;
 import jakarta.validation.constraints.NotBlank;
 
 public record ProductModelOutput(
@@ -8,7 +7,7 @@ public record ProductModelOutput(
     @NotBlank
     String name,
     @NotBlank
-    CategoryEnum categoryEnum,
+    String categoryEnum,
     @NotBlank
     String description,
 

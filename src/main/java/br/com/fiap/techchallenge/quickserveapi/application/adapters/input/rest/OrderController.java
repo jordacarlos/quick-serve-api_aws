@@ -1,7 +1,7 @@
 package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.OrderStatusEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderServicePort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/quick_service/order", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/quick_service/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderController {
 
     private final OrderServicePort orderServicePort;

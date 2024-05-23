@@ -1,8 +1,7 @@
 package br.com.fiap.techchallenge.quickserveapi.infra.entities;
 
-import br.com.fiap.techchallenge.quickserveapi.domain.Customer;
 import br.com.fiap.techchallenge.quickserveapi.domain.Product;
-import br.com.fiap.techchallenge.quickserveapi.domain.enuns.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

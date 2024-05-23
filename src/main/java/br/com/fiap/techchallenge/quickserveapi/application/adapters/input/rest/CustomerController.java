@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/quick_service/customer", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/quick_service/customers", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CustomerController {
 
     private final CustomerServicePort customerServicePort;
