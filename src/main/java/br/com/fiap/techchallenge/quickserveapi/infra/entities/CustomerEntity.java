@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
-@Entity(name = "customer")
+@Entity(name = "customers")
 public class CustomerEntity {
 
     @EqualsAndHashCode.Include

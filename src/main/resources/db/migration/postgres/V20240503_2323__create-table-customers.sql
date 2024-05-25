@@ -1,4 +1,4 @@
-CREATE TABLE customer
+CREATE TABLE customers
 (	
 	id BIGSERIAL UNIQUE,
     name character varying(100),    

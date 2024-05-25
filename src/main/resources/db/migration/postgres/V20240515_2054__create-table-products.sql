@@ -1,4 +1,4 @@
-CREATE TABLE product
+CREATE TABLE products
 (
     id BIGSERIAL UNIQUE,
     name character varying(50),

@@ -1,6 +1,6 @@
 package br.com.fiap.techchallenge.quickserveapi.application.adapters.output.repository;
 
-import br.com.fiap.techchallenge.quickserveapi.domain.Orders;
+import br.com.fiap.techchallenge.quickserveapi.domain.Order;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;
 import br.com.fiap.techchallenge.quickserveapi.infra.repositories.OrderJPARepository;
@@ -20,17 +20,17 @@ public class OrderRepository implements OrderRepositoryPort {
     }
 
     @Override
-    public Orders save(Orders orders) {
+    public Order save(Order orders) {
         try {
             OrderEntity orderEntity = new OrderEntity(orders);
             return this.orderJPARepository.save(orderEntity).toOrder();
         } catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "%s", ex);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
 
     @Override
-    public Orders findById(Long id) {
+    public Order findById(Long id) {
         try {
             Optional<OrderEntity> order = this.orderJPARepository.findById(id);
             return order.orElseThrow(() ->

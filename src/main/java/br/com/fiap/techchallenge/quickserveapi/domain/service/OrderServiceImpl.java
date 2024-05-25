@@ -2,7 +2,8 @@ package br.com.fiap.techchallenge.quickserveapi.domain.service;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.OrderInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
-import br.com.fiap.techchallenge.quickserveapi.domain.Orders;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
+import br.com.fiap.techchallenge.quickserveapi.domain.Order;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderServicePort;
@@ -19,8 +20,8 @@ public class OrderServiceImpl implements OrderServicePort {
         this.orderRepositoryPort = orderRepositoryPort;
     }
 
-    public OrderModel save(OrderInput orderInput) {
-        Orders order = new Orders(orderInput);
+    public OrderModel placeOrder(OrderInput orderInput) {
+        Order order = new Order(orderInput);
         try {
             return orderRepositoryPort.save(order).toOrderModel();
         } catch (DataIntegrityViolationException e) {
@@ -37,7 +38,7 @@ public class OrderServiceImpl implements OrderServicePort {
     }
 
     private OrderEntity toDomainObject(Long id, OrderStatusEnum status) {
-        Orders order = orderRepositoryPort.findById(id);
+        Order order = orderRepositoryPort.findById(id);
         if (Objects.nonNull(order)) {
             OrderEntity orderEntity = new OrderEntity(order);
             orderEntity.setStatus(status);
@@ -48,6 +49,18 @@ public class OrderServiceImpl implements OrderServicePort {
     }
 
     private OrderModel toOrderModel(OrderEntity order) {
-        return new OrderModel(order.getId(), order.getStatus());
+
+        return new OrderModel(
+                order.getId(),
+                order.getStatus(),
+                order.getCustomerID(),
+                order.getOrderItems().stream().map(product -> new ProductModel(
+                        product.getName(),
+                        product.getCategory().getDescricao(),
+                        product.getPrice(),
+                        product.getDescription(),
+                        product.getImagePath()
+                )).toList(),
+                order.getTotalOrderValue());
     }
 }

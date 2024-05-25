@@ -9,12 +9,11 @@ public record ProductModel(
     String categoryCategory,
 
     @NotBlank
-    double price,
+    Double price,
 
     @NotBlank
     String description,
 
     @NotBlank
     String imagePath
-
 ){}
