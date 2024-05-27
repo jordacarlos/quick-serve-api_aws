@@ -20,8 +20,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    OrderServicePort orderService(OrderRepositoryPort orderRepositoryPort){
-        return new OrderServiceImpl(orderRepositoryPort);
+    OrderServicePort orderService(OrderRepositoryPort orderRepositoryPort, ProductRepositoryPort productRepositoryPort){
+        return new OrderServiceImpl(orderRepositoryPort, productRepositoryPort);
     }
 
 }

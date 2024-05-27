@@ -2,28 +2,45 @@ package br.com.fiap.techchallenge.quickserveapi.domain.service;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.OrderInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
 import br.com.fiap.techchallenge.quickserveapi.domain.Order;
+import br.com.fiap.techchallenge.quickserveapi.domain.OrderProducts;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderServicePort;
+import br.com.fiap.techchallenge.quickserveapi.domain.ports.ProductRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class OrderServiceImpl implements OrderServicePort {
 
     private final OrderRepositoryPort orderRepositoryPort;
 
-    public OrderServiceImpl(OrderRepositoryPort orderRepositoryPort) {
+    private final ProductRepositoryPort productRepositoryPort;
+
+    public OrderServiceImpl(OrderRepositoryPort orderRepositoryPort, ProductRepositoryPort productRepositoryPort) {
         this.orderRepositoryPort = orderRepositoryPort;
+        this.productRepositoryPort = productRepositoryPort;
     }
 
     public OrderModel placeOrder(OrderInput orderInput) {
-        Order order = new Order(orderInput);
         try {
-            return orderRepositoryPort.save(order).toOrderModel();
+            List<OrderProducts> itemProducts =
+                    orderInput.orderItems()
+                            .stream()
+                            .map(ordermItemInput ->
+                                    new OrderProducts(
+                                            null,
+                                            productRepositoryPort.findById(ordermItemInput.porductId()),
+                                            ordermItemInput.quantity())).toList();
+
+            Order order = new Order(orderInput, itemProducts);
+
+            Order savedOrder = orderRepositoryPort.save(order);
+            return savedOrder.toOrderModel();
         } catch (DataIntegrityViolationException e) {
             throw new RuntimeException(String.format("Integridade de dados violada -> %s", e.getMessage()));
         }
@@ -54,13 +71,7 @@ public class OrderServiceImpl implements OrderServicePort {
                 order.getId(),
                 order.getStatus(),
                 order.getCustomerID(),
-                order.getOrderItems().stream().map(product -> new ProductModel(
-                        product.getName(),
-                        product.getCategory().getDescricao(),
-                        product.getPrice(),
-                        product.getDescription(),
-                        product.getImagePath()
-                )).toList(),
+                new ArrayList<>(),
                 order.getTotalOrderValue());
     }
 }

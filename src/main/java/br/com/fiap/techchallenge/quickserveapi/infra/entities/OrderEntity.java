@@ -2,7 +2,6 @@ package br.com.fiap.techchallenge.quickserveapi.infra.entities;
 
 
 import br.com.fiap.techchallenge.quickserveapi.domain.Order;
-import br.com.fiap.techchallenge.quickserveapi.domain.Product;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -11,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity(name = "orders")
 public class OrderEntity {
 
@@ -27,21 +26,22 @@ public class OrderEntity {
     @Column(name = "customer_id")
     private Long customerID;
 
-    @OneToMany(targetEntity = ProductEntity.class,cascade = CascadeType.ALL)
-    @JoinColumn(name ="order_items",referencedColumnName = "id")
-    private List<ProductEntity> orderItems;
+    @OneToMany(mappedBy = "order")
+    private List<OrderProductsEntity> orderItems;
 
     @Column(nullable = false)
     private Double totalOrderValue;
 
-    public OrderEntity(Order order){
+    public OrderEntity(Order order) {
         this.id = order.getId();
         this.customerID = order.getCustomerID();
         this.status = order.getStatus();
+        this.orderItems = order.getOrderItems().stream().map(product ->
+                new OrderProductsEntity(null,new ProductEntity(product.getProduct()), product.getProductQuantity())).toList();
         this.totalOrderValue = order.getTotalOrderValue();
     }
 
-    public Order toOrder(){
-        return new Order(this.id, this.customerID, this.status, this.totalOrderValue);
+    public Order toOrder() {
+        return new Order(this.id, this.customerID, this.status, this.orderItems.stream().map(OrderProductsEntity::toOrderProducts).toList(), this.totalOrderValue);
     }
 }

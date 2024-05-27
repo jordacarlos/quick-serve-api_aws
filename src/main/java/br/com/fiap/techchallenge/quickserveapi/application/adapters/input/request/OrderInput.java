@@ -9,8 +9,6 @@ import java.util.List;
 public record OrderInput(
         Long customerID,
         @NotEmpty
-        List<Product> orderItems,
-        @NotNull
-        Double totalOrderValue
+        List<OrdermItemInput> orderItems
 ) {
 }

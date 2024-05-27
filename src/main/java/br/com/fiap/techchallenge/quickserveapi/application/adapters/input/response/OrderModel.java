@@ -16,7 +16,7 @@ public record OrderModel(
         OrderStatusEnum status,
         Long customerID,
         @NotEmpty
-        List<ProductModel> orderItems,
+        List<OrderProductModel> orderItems,
         @NotNull
         Double totalOrderValue) {
 }

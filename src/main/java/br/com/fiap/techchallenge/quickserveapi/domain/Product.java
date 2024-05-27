@@ -4,6 +4,8 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.reques
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.exception.CategoryNotFoundException;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;
+import br.com.fiap.techchallenge.quickserveapi.infra.entities.ProductEntity;
 
 import java.util.Objects;
 
@@ -62,6 +64,14 @@ public class Product {
         this.price = input.price();
         this.description = input.description();
         this.imagePath = input.imagePath();
+    }
+
+    public Product(ProductEntity entity){
+        this.name = entity.getName();
+        this.category = entity.getCategory();
+        this.price = entity.getPrice();
+        this.description = entity.getDescription();
+        this.imagePath = entity.getImagePath();
     }
 
     public ProductModel toProductModel() {

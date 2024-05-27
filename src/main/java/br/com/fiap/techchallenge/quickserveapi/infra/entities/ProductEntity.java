@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
 @Entity(name = "products")
@@ -31,6 +33,9 @@ public class ProductEntity {
 
     @Column(nullable = false)
     private String imagePath;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderProductsEntity> itemOrders;
 
     public ProductEntity() {
     }
