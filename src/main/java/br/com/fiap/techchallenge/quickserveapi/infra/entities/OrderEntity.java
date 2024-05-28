@@ -47,4 +47,8 @@ public class OrderEntity {
     public Order toOrder() {
         return new Order(this.id, this.customerID, this.status, this.orderItems.stream().map(OrderProductsEntity::toOrderProducts).toList(), this.totalOrderValue);
     }
+
+    public Order toOrderToUpdateStatus() {
+        return new Order(this.id, this.customerID, this.status, this.totalOrderValue);
+    }
 }

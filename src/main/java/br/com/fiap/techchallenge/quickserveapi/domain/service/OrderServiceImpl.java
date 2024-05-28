@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderServicePort {
     public OrderModel updateOrderStatus(Long id, OrderStatusEnum status) {
         OrderEntity order = null;
         try {
-            order = toDomainObject(id, status);
+            order = toDomainObjectToUpdate(id, status);
             System.out.println(order);
             orderRepositoryPort.updateStatus(order.toOrder());
         } catch (Exception e) {
@@ -64,8 +64,8 @@ public class OrderServiceImpl implements OrderServicePort {
         return toOrderModel(order);
     }
 
-    private OrderEntity toDomainObject(Long id, OrderStatusEnum status) {
-        Order order = orderRepositoryPort.findById(id);
+    private OrderEntity toDomainObjectToUpdate(Long id, OrderStatusEnum status) {
+        Order order = orderRepositoryPort.findByIdToUpdate(id);
         if (Objects.nonNull(order)) {
             OrderEntity orderEntity = new OrderEntity(order);
             orderEntity.setStatus(status);

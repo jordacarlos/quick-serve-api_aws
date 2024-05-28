@@ -71,6 +71,20 @@ public class OrderRepository implements OrderRepositoryPort {
         }
     }
 
+    @Override
+    public Order findByIdToUpdate(Long id) {
+        try {
+            Optional<OrderEntity> order = this.orderJPARepository.findById(id);
+            return order.orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Pedido [%d] não encontrado", id))
+            ).toOrderToUpdateStatus();
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro ao buscar o pedido", ex);
+        }
+    }
+
     public Page<OrderModelOutput> findAll(Pageable pageable) {
         try {
             Page<OrderEntity> orderPage = this.orderJPARepository.findAll(pageable);

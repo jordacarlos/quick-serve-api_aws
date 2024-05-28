@@ -2,10 +2,10 @@ package br.com.fiap.techchallenge.quickserveapi.domain;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.OrderInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderProductModel;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -21,6 +21,14 @@ public class Order {
         this.customerID = customerID;
         this.status = status;
         this.orderItems = orderItems;
+        this.totalOrderValue = totalOrderValue;
+    }
+
+    public Order(Long id, Long customerID, OrderStatusEnum status, Double totalOrderValue) {
+        this.id = id;
+        this.customerID = customerID;
+        this.status = status;
+        this.orderItems = new ArrayList<>();
         this.totalOrderValue = totalOrderValue;
     }
 
