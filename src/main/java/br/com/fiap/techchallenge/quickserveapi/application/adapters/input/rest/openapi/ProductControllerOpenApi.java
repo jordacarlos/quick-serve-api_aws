@@ -5,6 +5,7 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.reques
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest.openapi.model.PageableParameter;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -29,7 +30,7 @@ public interface ProductControllerOpenApi {
     @Operation(summary = "Encontra produto por Categoria")
     public List<ProductModel> findByCategory(
             @Parameter(description = "Categoria do produto", required = true)
-            String category);
+            CategoryEnum category);
 
     @Operation(summary = "Inclui produtos")
     public ProductModel add(

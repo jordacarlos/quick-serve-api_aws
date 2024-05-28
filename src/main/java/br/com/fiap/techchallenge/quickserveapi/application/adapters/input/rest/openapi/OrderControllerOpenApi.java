@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 public interface OrderControllerOpenApi {
 
     @Operation(summary = "Atualiza status do pedido")
-    @PageableParameter
     public OrderModel updateOrderStatus(
         @Parameter(description = "ID do pedido", required = true)
         Long id,

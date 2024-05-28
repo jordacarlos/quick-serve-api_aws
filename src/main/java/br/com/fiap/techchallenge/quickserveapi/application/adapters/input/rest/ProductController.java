@@ -8,6 +8,7 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.respon
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest.openapi.CustomerControlerOpenApi;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest.openapi.ProductControllerOpenApi;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.exception.CategoryNotFoundException;
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.ProductServicePort;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -44,9 +45,9 @@ public class ProductController implements ProductControllerOpenApi {
         return this.productServicePort.findOrElseById(id);
     }
 
-    @GetMapping("/{category}")
-    public List<ProductModel> findByCategory(@PathVariable String category) throws CategoryNotFoundException {
-        return this.productServicePort.findByCategory(category);
+    @GetMapping("/by_category/{category}")
+    public List<ProductModel> findByCategory(@PathVariable CategoryEnum category) throws CategoryNotFoundException {
+        return this.productServicePort.findByCategory(category.toString());
     }
 
     @DeleteMapping("/{id}")

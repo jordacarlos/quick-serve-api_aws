@@ -54,7 +54,7 @@ public class Product {
 
     public Product(ProductInput input) {
 
-        CategoryEnum categoryEnum = CategoryEnum.getValidCategory(input.category().toUpperCase());
+        CategoryEnum categoryEnum = CategoryEnum.getValidCategory(input.category().toString().toUpperCase());
         if (Objects.isNull(categoryEnum)){
             throw new CategoryNotFoundException(input.category() + " Não é uma categoria válida");
         }

@@ -1,4 +1,6 @@
 package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request;
 
-public record ProductInput(String name, String category, double price, String description, String imagePath) {
+import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
+
+public record ProductInput(String name, CategoryEnum category, double price, String description, String imagePath) {
 }
