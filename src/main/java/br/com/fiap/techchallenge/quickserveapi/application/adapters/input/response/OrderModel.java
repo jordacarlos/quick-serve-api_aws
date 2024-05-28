@@ -11,12 +11,6 @@ import java.util.List;
 
 public record OrderModel(
         @NotBlank
-        Long id,
-        @NotBlank
-        OrderStatusEnum status,
-        Long customerID,
-        @NotEmpty
-        List<OrderProductModel> orderItems,
-        @NotNull
-        Double totalOrderValue) {
+        Long id
+) {
 }

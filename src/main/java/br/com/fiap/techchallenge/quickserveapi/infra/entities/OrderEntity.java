@@ -6,16 +6,19 @@ import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
+@NoArgsConstructor
 @Entity(name = "orders")
 public class OrderEntity {
 
     @EqualsAndHashCode.Include
     @Id
+    @Column(name = "order_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

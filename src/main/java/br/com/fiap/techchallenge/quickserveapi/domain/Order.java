@@ -32,6 +32,10 @@ public class Order {
         this.totalOrderValue = entity.getTotalOrderValue();
     }
 
+    public Order(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
@@ -49,13 +53,7 @@ public class Order {
     }
 
     public OrderModel toOrderModel() {
-        return new OrderModel(
-                this.id,
-                this.status,
-                this.customerID,
-                this.orderItems.stream().map(product -> new OrderProductModel(
-                        product.getProduct().getId(),
-                        product.getProductQuantity())).toList(), this.totalOrderValue);
+        return new OrderModel(this.id);
     }
 
     public Long getCustomerID() {

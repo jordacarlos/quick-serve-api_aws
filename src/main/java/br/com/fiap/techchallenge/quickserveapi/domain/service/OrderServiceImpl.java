@@ -47,11 +47,15 @@ public class OrderServiceImpl implements OrderServicePort {
     }
 
     public OrderModel updateOrderStatus(Long id, OrderStatusEnum status) {
-        OrderEntity order = toDomainObject(id, status);
-        System.out.println(order);
-        OrderModel orderModel = toOrderModel(order);
-        orderRepositoryPort.save(order.toOrder());
-        return orderModel;
+        OrderEntity order = null;
+        try {
+            order = toDomainObject(id, status);
+            System.out.println(order);
+            orderRepositoryPort.updateStatus(order.toOrder());
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Integridade de dados violada -> %s", e.getMessage()));
+        }
+        return toOrderModel(order);
     }
 
     private OrderEntity toDomainObject(Long id, OrderStatusEnum status) {
@@ -66,12 +70,6 @@ public class OrderServiceImpl implements OrderServicePort {
     }
 
     private OrderModel toOrderModel(OrderEntity order) {
-
-        return new OrderModel(
-                order.getId(),
-                order.getStatus(),
-                order.getCustomerID(),
-                new ArrayList<>(),
-                order.getTotalOrderValue());
+        return new OrderModel(order.getId());
     }
 }

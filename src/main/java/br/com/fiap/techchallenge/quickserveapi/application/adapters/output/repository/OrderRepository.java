@@ -3,9 +3,12 @@ package br.com.fiap.techchallenge.quickserveapi.application.adapters.output.repo
 import br.com.fiap.techchallenge.quickserveapi.domain.Order;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;
+import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderProductsEntity;
 import br.com.fiap.techchallenge.quickserveapi.infra.repositories.OrderJPARepository;
+import br.com.fiap.techchallenge.quickserveapi.infra.repositories.OrderProductsJPARepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -14,16 +17,36 @@ import java.util.Optional;
 public class OrderRepository implements OrderRepositoryPort {
     private final OrderJPARepository orderJPARepository;
 
+    private final OrderProductsJPARepository orderProductsJPARepository;
 
-    public OrderRepository(OrderJPARepository orderJPARepository) {
+
+    public OrderRepository(OrderJPARepository orderJPARepository, OrderProductsJPARepository orderProductsJPARepository) {
         this.orderJPARepository = orderJPARepository;
+        this.orderProductsJPARepository = orderProductsJPARepository;
     }
 
     @Override
+    @Transactional
     public Order save(Order orders) {
         try {
             OrderEntity orderEntity = new OrderEntity(orders);
-            return this.orderJPARepository.save(orderEntity).toOrder();
+            OrderEntity savedOrder = this.orderJPARepository.save(orderEntity);
+            savedOrder.getOrderItems().forEach( orderItem ->{
+                OrderProductsEntity orderProducts = new OrderProductsEntity(savedOrder, orderItem.getProduct(), orderItem.getProductQuantity());
+                orderProductsJPARepository.save(orderProducts);
+            });
+            return new Order(savedOrder.getId());
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @Override
+    public Order updateStatus(Order orders) {
+        try {
+            OrderEntity orderEntity = new OrderEntity(orders);
+            OrderEntity savedOrder = this.orderJPARepository.save(orderEntity);
+            return new Order(savedOrder.getId());
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }

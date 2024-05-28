@@ -6,4 +6,6 @@ public interface OrderRepositoryPort {
     Order findById(Long id);
 
     Order save(Order order);
+
+    Order updateStatus(Order order);
 }

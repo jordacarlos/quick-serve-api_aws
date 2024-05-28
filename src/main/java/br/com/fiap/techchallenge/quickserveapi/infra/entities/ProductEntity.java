@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper=false)
@@ -15,6 +16,7 @@ public class ProductEntity {
 
     @EqualsAndHashCode.Include
     @Id
+    @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -34,8 +36,8 @@ public class ProductEntity {
     @Column(nullable = false)
     private String imagePath;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderProductsEntity> itemOrders;
+    @OneToMany(mappedBy = "product")
+    private Set<OrderProductsEntity> itemOrders;
 
     public ProductEntity() {
     }
