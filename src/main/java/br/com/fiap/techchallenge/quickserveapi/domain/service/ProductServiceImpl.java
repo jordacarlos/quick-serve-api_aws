@@ -2,9 +2,9 @@ package br.com.fiap.techchallenge.quickserveapi.domain.service;
 
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.ProductInput;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.ProductUpdate;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModelOutput;
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.ProductUpdate;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.exception.CategoryNotFoundException;
 import br.com.fiap.techchallenge.quickserveapi.domain.Product;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.CategoryEnum;
@@ -64,6 +64,13 @@ public class ProductServiceImpl implements ProductServicePort {
             throw new RuntimeException(
                     String.format("Código %d não pode ser removida, pois está em uso", productId));
         }
+    }
+
+    public ProductModel findOrElseById(Long id) {
+        Optional<ProductModel> optionalProductModel = findById(id);
+        if (optionalProductModel.isEmpty())
+            throw new RuntimeException("Product not found");
+        return optionalProductModel.get();
     }
 
     public ProductModel update(Long id, ProductUpdate productUpdate) {

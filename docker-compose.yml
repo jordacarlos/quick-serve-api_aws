@@ -5,7 +5,6 @@ services:
     image: fiap-7soat-51/quick-serve-api:0.1
     build:
       context: ./
-      #context: ./../../quick-serve-api
     container_name: quick-serve-api
     environment:
       - 'SPRING_PROFILES_ACTIVE_ENVIRONMENT=${APP_ENVIRONMENT}'
@@ -15,7 +14,8 @@ services:
       - 'SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}'
       - 'SPRING_DATASOURCE_DRIVER=${DB_DIALECT}'
     ports:
-      - "${APP_PORT}:8087"
+      - "${APP_PORT}:8087" #APP_ENVIRONMENT=production
+      #- "${APP_PORT}:8088" #APP_ENVIRONMENT=development
     depends_on:
       - quick-serve-db
     networks:

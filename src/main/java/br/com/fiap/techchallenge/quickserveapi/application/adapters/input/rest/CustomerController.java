@@ -4,6 +4,7 @@ import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.respon
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerUpdate;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest.openapi.CustomerControlerOpenApi;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.CustomerServicePort;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/quick_service/customers", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CustomerController {
+public class CustomerController implements CustomerControlerOpenApi {
 
     private final CustomerServicePort customerServicePort;
 
@@ -36,7 +37,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public CustomerModel findByAccessKey(@PathVariable Long id) {
+    public CustomerModel findById(@PathVariable Long id) {
         return this.customerServicePort.findOrElseById(id);
     }
 

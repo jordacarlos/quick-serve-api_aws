@@ -3,6 +3,8 @@ package br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.OrderInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModelOutput;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest.openapi.OrderControllerOpenApi;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.rest.openapi.ProductControllerOpenApi;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderServicePort;
 import org.springframework.data.domain.Page;
@@ -13,7 +15,7 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping(path = "/quick_service/orders", produces = MediaType.APPLICATION_JSON_VALUE)
-public class OrderController {
+public class OrderController implements OrderControllerOpenApi {
 
     private final OrderServicePort orderServicePort;
 
