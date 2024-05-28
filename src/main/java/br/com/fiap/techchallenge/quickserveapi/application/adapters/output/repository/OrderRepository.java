@@ -1,15 +1,20 @@
 package br.com.fiap.techchallenge.quickserveapi.application.adapters.output.repository;
 
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModelOutput;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.ProductModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.domain.Order;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderProductsEntity;
+import br.com.fiap.techchallenge.quickserveapi.infra.entities.ProductEntity;
 import br.com.fiap.techchallenge.quickserveapi.infra.repositories.OrderJPARepository;
 import br.com.fiap.techchallenge.quickserveapi.infra.repositories.OrderProductsJPARepository;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -65,4 +70,22 @@ public class OrderRepository implements OrderRepositoryPort {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro ao buscar o pedido", ex);
         }
     }
+
+    public Page<OrderModelOutput> findAll(Pageable pageable) {
+        try {
+            Page<OrderEntity> orderPage = this.orderJPARepository.findAll(pageable);
+            return orderPage.map(this::toOrderModelOutput);
+        } catch (ResponseStatusException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro ao listar os pedidos", ex);
+        }
+    }
+
+    private OrderModelOutput toOrderModelOutput(OrderEntity orderEntity) {
+        return new OrderModelOutput( orderEntity.getId(), orderEntity.getStatus());
+
+    }
+
+
 }

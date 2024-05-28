@@ -2,6 +2,7 @@ package br.com.fiap.techchallenge.quickserveapi.domain.service;
 
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.OrderInput;
 import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModel;
+import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.OrderModelOutput;
 import br.com.fiap.techchallenge.quickserveapi.domain.Order;
 import br.com.fiap.techchallenge.quickserveapi.domain.OrderProducts;
 import br.com.fiap.techchallenge.quickserveapi.domain.enums.OrderStatusEnum;
@@ -10,7 +11,8 @@ import br.com.fiap.techchallenge.quickserveapi.domain.ports.OrderServicePort;
 import br.com.fiap.techchallenge.quickserveapi.domain.ports.ProductRepositoryPort;
 import br.com.fiap.techchallenge.quickserveapi.infra.entities.OrderEntity;
 import org.springframework.dao.DataIntegrityViolationException;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +26,10 @@ public class OrderServiceImpl implements OrderServicePort {
     public OrderServiceImpl(OrderRepositoryPort orderRepositoryPort, ProductRepositoryPort productRepositoryPort) {
         this.orderRepositoryPort = orderRepositoryPort;
         this.productRepositoryPort = productRepositoryPort;
+    }
+
+    public Page<OrderModelOutput> findAllWithId(Pageable paginacao) {
+        return orderRepositoryPort.findAll(paginacao);
     }
 
     public OrderModel placeOrder(OrderInput orderInput) {
