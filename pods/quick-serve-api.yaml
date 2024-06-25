@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: quick-serve-api
+  labels:
+    app: quick-serve-api
+spec:
+  containers:
+    - name: quick-serve-api
+      image: arterodocker/quick-serve-api:1.0.0
+      ports:
+        - containerPort: 8087
