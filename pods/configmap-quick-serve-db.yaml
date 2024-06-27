@@ -5,6 +5,4 @@ metadata:
   labels:
     name: quick-serve-db-config
 data:
-  POSTGRES_USER: root
-  POSTGRES_PASSWORD: root123
   POSTGRES_DB: quick-serve

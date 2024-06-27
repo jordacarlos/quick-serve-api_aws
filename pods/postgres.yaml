@@ -16,13 +16,13 @@ spec:
       env:
         - name: POSTGRES_USER
           valueFrom:
-            configMapKeyRef:
-              name: quick-serve-db-config
+            secretKeyRef:
+              name: quick-serve-db-secret
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
-            configMapKeyRef:
-              name: quick-serve-db-config
+            secretKeyRef:
+              name: quick-serve-db-secret
               key: POSTGRES_PASSWORD
         - name: POSTGRES_DB
           valueFrom:
