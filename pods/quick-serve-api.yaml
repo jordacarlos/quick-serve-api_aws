@@ -4,9 +4,48 @@ metadata:
   name: quick-serve-api
   labels:
     app: quick-serve-api
+  annotations:
+    autor: Grupo 51 - Fiap Postech - 7SOAT
+    app-version: 1.0.0
 spec:
   containers:
     - name: quick-serve-api
       image: arterodocker/quick-serve-api:1.0.0
       ports:
         - containerPort: 8087
+      env:
+        - name: SPRING_PROFILES_ACTIVE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: quick-serve-api-config
+              key: SPRING_PROFILES_ACTIVE_ENVIRONMENT
+        - name: SPRING_DATASOURCE_PLATFORM
+          valueFrom:
+            configMapKeyRef:
+              name: quick-serve-api-config
+              key: SPRING_DATASOURCE_PLATFORM
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: quick-serve-api-config
+              key: SPRING_DATASOURCE_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: quick-serve-api-config
+              key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: quick-serve-api-config
+              key: SPRING_DATASOURCE_PASSWORD
+        - name: SPRING_DATASOURCE_DRIVER
+          valueFrom:
+            configMapKeyRef:
+              name: quick-serve-api-config
+              key: SPRING_DATASOURCE_DRIVER
+        - name: APP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: quick-serve-api-config
+              key: APP_PORT
