@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/quick_service/customers", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CustomerController implements CustomerControlerOpenApi {
+@RequestMapping(path = "/quick_service/customer", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CustomerControllerold implements CustomerControlerOpenApi {
 
     private final CustomerServicePort customerServicePort;
 
-    public CustomerController(CustomerServicePort customerServicePort) {
+    public CustomerControllerold(CustomerServicePort customerServicePort) {
         this.customerServicePort = customerServicePort;
     }
 
