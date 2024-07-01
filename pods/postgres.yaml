@@ -1,31 +1,38 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: quick-serve-db
-  labels:
-    app: quick-serve-db
+  name: quick-serve-db-deployment
   annotations:
     autor: Grupo 51 - Fiap Postech - 7SOAT
     app-version: 1.0.0
 spec:
-  containers:
-    - name: quick-serve-db
-      image: postgres:14
-      ports:
-        - containerPort: 5432
-      env:
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: quick-serve-db-secret
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: quick-serve-db-secret
-              key: POSTGRES_PASSWORD
-        - name: POSTGRES_DB
-          valueFrom:
-            configMapKeyRef:
-              name: quick-serve-db-config
-              key: POSTGRES_DB
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quick-serve-db
+  template:
+    metadata:
+      labels:
+        app: quick-serve-db
+    spec:
+      containers:
+        - name: quick-serve-db
+          image: postgres:14
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: quick-serve-db-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: quick-serve-db-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: quick-serve-db-config
+                  key: POSTGRES_DB
