@@ -34,11 +34,6 @@ Segue abaixo passo a passo para rodar o projeto com docker
 
 Após subir a API, a documentação Swagger ficará disponibilizado em:
 
-> <b>Profile Development</b>
->
->       http://localhost:8088/swagger-ui/index.html#/
->
-> <b>Profile Production</b>
->
->       http://localhost:8087/swagger-ui/index.html#/
-> 
+
+>       http://localhost:30081/swagger-ui/index.html#/
+ 

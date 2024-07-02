@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: quick-serve-api-deployment
   annotations:
-    autor: Grupo 51 - Fiap Postech - 7SOAT
+    author: Grupo 51 - Fiap Postech - 7SOAT
     app-version: 1.0.0
 spec:
   replicas: 3
