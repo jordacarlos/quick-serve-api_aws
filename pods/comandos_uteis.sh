@@ -1,5 +1,8 @@
 # Show All Pods
-kubectl get pods,svc,configmaps,secrets,deployments,pv,pvc
+kubectl get pods,svc,configmaps,secrets,deployments,pv,pvc,hpa
+
+# Wathc HPA
+kubectl get hpa --watch
 
 # Wathc Logs
 kubectl get pods --watch
@@ -16,6 +19,8 @@ kubectl delete configmaps --all
 kubectl delete secrets --all
 kubectl delete pvc --all
 kubectl delete pv --all
+kubectl delete metrics --all
+kubectl delete hpa --all
 
 # Delete Pod/Deplyment by file.yaml
 kubectl delete -f <name-file.yaml>
@@ -31,6 +36,8 @@ kubectl apply -f postgres.yaml
 kubectl apply -f quick-serve-api.yaml
 kubectl apply -f svc-postgres.yaml
 kubectl apply -f svc-quick-serve-api.yaml
+kubectl apply -f metrics.yaml
+kubectl apply -f hpa.yaml
 
 # Check revisions deployments
 kubectl rollout history deployment

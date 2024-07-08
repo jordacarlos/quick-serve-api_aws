@@ -2,11 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: quick-serve-api-deployment
+  labels: 
+    app: quick-serve-api-deployment
   annotations:
     author: Grupo 51 - Fiap Postech - 7SOAT
     app-version: 1.0.0
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: quick-serve-api
@@ -20,6 +22,9 @@ spec:
           image: arterodocker/quick-serve-api:1.0.0
           ports:
             - containerPort: 8087
+          resources:
+            requests:
+              cpu: 1m
           env:
             - name: SPRING_PROFILES_ACTIVE_ENVIRONMENT
               valueFrom:
