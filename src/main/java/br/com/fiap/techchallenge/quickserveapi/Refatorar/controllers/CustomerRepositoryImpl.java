@@ -19,6 +19,31 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     }
 
     @Override
+    public CustomerEntity save(CustomerEntity customer) {
+        ParametroBd[] parametros = new ParametroBd[] {
+                new ParametroBd("name", customer.getName()),
+                new ParametroBd("email", customer.getEmail()),
+                new ParametroBd("cpf", customer.getCpf())
+        };
+
+        // Chamada ao método Inserir do database com os parâmetros necessários
+        String[] campos = {"name", "email", "cpf"};
+        String tabela = "customers";
+        List<Map<String, Object>> result  = database.Inserir(tabela, campos, parametros);
+        // Configurar o ID no CustomerEntity
+        if (result != null && !result.isEmpty()) {
+            Map<String, Object> row = result.get(0);
+            if (row.containsKey("id")) {
+                customer.setId(Long.parseLong(row.get("id").toString()));
+            }
+        }
+
+        return customer;
+    }
+
+
+
+    @Override
     public CustomerEntity findById(Long id) {
         ParametroBd[] parametros = { new ParametroBd("id", id) };
         List<Map<String, Object>> resultados = database.buscarPorParametros("customers", new String[]{"id", "name", "email", "cpf"}, parametros);
@@ -46,28 +71,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         return CustomerAdapter.mapToCustomerEntityList(resultados);
     }
 
-    @Override
-    public CustomerEntity save(CustomerEntity customer) {
-        ParametroBd[] parametros = new ParametroBd[] {
-                new ParametroBd("name", customer.getName()),
-                new ParametroBd("email", customer.getEmail()),
-                new ParametroBd("cpf", customer.getCpf())
-        };
 
-        // Chamada ao método Inserir do database com os parâmetros necessários
-        String[] campos = {"name", "email", "cpf"};
-        String tabela = "customers";
-        List<Map<String, Object>> result  = database.Inserir(tabela, campos, parametros);
-        // Configurar o ID no CustomerEntity
-        if (result != null && !result.isEmpty()) {
-            Map<String, Object> row = result.get(0);
-            if (row.containsKey("id")) {
-                customer.setId(Long.parseLong(row.get("id").toString()));
-            }
-        }
-
-        return customer;
-    }
 
     @Override
     public CustomerEntity update(Long id,CustomerEntity customer) {

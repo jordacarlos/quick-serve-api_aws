@@ -38,6 +38,26 @@ public class DatabaseConnection implements dbconnection {
         return connection;
     }
 
+    private String getTableIdColumn(Connection connection, String tabela) throws SQLException {
+        String primaryKeyColumn = null;
+
+        // Obtenha os metadados do banco de dados
+        DatabaseMetaData metaData = connection.getMetaData();
+
+        // Obtenha as chaves primárias da tabela
+        try (ResultSet rs = metaData.getPrimaryKeys(null, null, tabela)) {
+            if (rs.next()) {
+                primaryKeyColumn = rs.getString("COLUMN_NAME");
+            }
+        }
+
+        if (primaryKeyColumn == null) {
+            throw new RuntimeException("Nenhuma chave primária encontrada para a tabela: " + tabela);
+        }
+
+        return primaryKeyColumn;
+    }
+
     public List<Map<String, Object>> executarQuery(String query, ParametroBd[] parametros, String[] campos) {
         List<Map<String, Object>> resultados = new ArrayList<>();
 
@@ -49,6 +69,8 @@ public class DatabaseConnection implements dbconnection {
                     preparedStatement.setObject(i + 1, parametros[i].getValor());
                 }
             }
+            //System.out.println("Query antes da execução: " + preparedStatement); // Verifica a query completa antes de executar
+
             if (query.trim().toUpperCase().startsWith("SELECT")) {
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
@@ -60,6 +82,7 @@ public class DatabaseConnection implements dbconnection {
                 }
             } else if (query.trim().toUpperCase().startsWith("INSERT")) {
                 ResultSet resultSet = preparedStatement.executeQuery();
+
                 if (resultSet.next()) {
                     Map<String, Object> row = new HashMap<>();
                     row.put("id", resultSet.getObject(1));
@@ -67,20 +90,18 @@ public class DatabaseConnection implements dbconnection {
                 } else {
                     throw new RuntimeException("Nenhum ID retornado pela operação de inserção.");
                 }
-            }
-            else {
+            } else {
                 int affectedRows = preparedStatement.executeUpdate();
 
-                if(affectedRows <=0){
+                if (affectedRows <= 0) {
                     Map<String, Object> row = new HashMap<>();
                     row.put("Mensagem", "Operação não foi executada, número de registros afetados foi: " + affectedRows);
                     resultados.add(row);
-                }else{
+                } else {
                     Map<String, Object> row = new HashMap<>();
                     row.put("Mensagem", "Operação bem-sucedida, número de registros afetados: " + affectedRows);
                     resultados.add(row);
                 }
-
             }
         } catch (SQLException e) {
             Map<String, Object> row = new HashMap<>();
@@ -88,6 +109,46 @@ public class DatabaseConnection implements dbconnection {
             resultados.add(row);
         }
         return resultados;
+    }
+
+
+    public List<Map<String, Object>> Inserir(String tabela, String[] campos, ParametroBd[] parametros) {
+        StringBuilder query = new StringBuilder("INSERT INTO ");
+        query.append(tabela).append(" (");
+
+        // Adiciona os campos na query
+        for (int i = 0; i < campos.length; i++) {
+            query.append(campos[i]);
+            if (i < campos.length - 1) {
+                query.append(", ");
+            }
+        }
+        query.append(") VALUES (");
+
+        // Adiciona os placeholders para os valores na query
+        for (int i = 0; i < parametros.length; i++) {
+            query.append("?");
+            if (i < parametros.length - 1) {
+                query.append(", ");
+            }
+        }
+
+        // Adiciona a parte RETURNING
+        String idColumn;
+        try (Connection connection = connect()) {
+            idColumn = getTableIdColumn(connection, tabela);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao obter a coluna de ID da tabela: " + tabela, e);
+        }
+
+        query.append(") RETURNING ")
+                .append(idColumn)
+                .append(";");
+
+        // Exibe a query construída
+        System.out.println("Query construída: " + query.toString());
+
+        return executarQuery(query.toString(), parametros, campos);
     }
 
     public List<Map<String, Object>> deletar(String tabela, String[] campos, ParametroBd[] parametros) {
@@ -115,34 +176,6 @@ public class DatabaseConnection implements dbconnection {
         return executarQuery(query.toString(), parametros,campos);
     }
 
-    public List<Map<String, Object>> Inserir(String tabela, String[] campos, ParametroBd[] parametros) {
-        StringBuilder query = new StringBuilder("INSERT INTO ");
-        query.append(tabela).append(" (");
-
-        // Adiciona os campos na query
-        for (int i = 0; i < campos.length; i++) {
-            query.append(campos[i]);
-            if (i < campos.length - 1) {
-                query.append(", ");
-            }
-        }
-        query.append(") VALUES (");
-
-        // Adiciona os placeholders para os valores na query
-        for (int i = 0; i < parametros.length; i++) {
-            query.append("?");
-            if (i < parametros.length - 1) {
-                query.append(", ");
-            }
-        }
-        query.append(") RETURNING id;");
-
-        // Exibe a query construída
-        System.out.println("Query construída: " + query.toString());
-
-        return executarQuery(query.toString(), parametros,campos);
-    }
-
     public List<Map<String, Object>> Update(String tabela, String[] campos, ParametroBd[] parametros) {
         StringBuilder query = new StringBuilder("UPDATE ");
         query.append(tabela).append(" SET ");
@@ -155,9 +188,16 @@ public class DatabaseConnection implements dbconnection {
             }
         }
 
-        query.append(" WHERE id = ? ");
+        String idColumn;
+        try (Connection connection = connect()) {
+            idColumn = getTableIdColumn(connection, tabela);
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao obter a coluna de ID da tabela: " + tabela, e);
+        }
 
-        query.append(";");
+        query.append(" WHERE ")
+                .append(idColumn)
+                .append("= ? ;");
 
         // Exibe a query construída
         System.out.println("Query construída: " + query.toString());
