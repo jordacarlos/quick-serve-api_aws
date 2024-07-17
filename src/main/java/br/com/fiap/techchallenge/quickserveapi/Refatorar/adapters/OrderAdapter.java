@@ -16,15 +16,11 @@ public class OrderAdapter {
         }
         OrderStatusEnum status = OrderStatusEnum.valueOf((String) row.get("status"));
 
-        // TODO retornar a lista de produtos by id da ordem
-
-        List<ProductEntity>  orders = null;
-
         return new  OrderEntity(
                 (Long) row.get("order_id"),
                 (String) row.get("customer_id"),
                 status,
-                (List<ProductEntity>) orders,
+                null,
                 (Double) row.get("total_order_value")
         );
     }
