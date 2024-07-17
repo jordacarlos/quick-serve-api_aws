@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.quickserveapi.Refatorar.usecases;
 
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.entities.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.Refatorar.entities.OrderEntity;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.entities.ProductEntity;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.interfaces.ProductRepository;
 
@@ -26,7 +27,9 @@ public class ProductUseCases implements ProductRepository {
     public List<ProductEntity> findByCategory(CategoryEnum category) {
         return productRepository.findByCategory(category);
     }
-
+    public List<ProductEntity> findByOrder(OrderEntity order){
+        return productRepository.findByOrder(order);
+    }
 
     public List<ProductEntity> findAll() {
         return productRepository.findAll();

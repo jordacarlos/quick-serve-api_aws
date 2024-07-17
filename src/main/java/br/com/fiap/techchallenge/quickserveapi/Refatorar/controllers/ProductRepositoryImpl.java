@@ -1,13 +1,14 @@
 package br.com.fiap.techchallenge.quickserveapi.Refatorar.controllers;
 
-import br.com.fiap.techchallenge.quickserveapi.Refatorar.adapters.CustomerAdapter;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.adapters.ProductAdapter;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.entities.CategoryEnum;
+import br.com.fiap.techchallenge.quickserveapi.Refatorar.entities.OrderEntity;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.entities.ProductEntity;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.external.DatabaseConnection;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.interfaces.ParametroBd;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.interfaces.ProductRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,22 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         // Utiliza o adapter para mapear os resultados para ProductEntity
         return ProductAdapter.mapToProductEntityList(resultados);
+    }
+
+    @Override
+    public List<ProductEntity> findByOrder(OrderEntity order){
+        ParametroBd[] parametros = { new ParametroBd("order_id", order.getId()) };
+        List<Map<String, Object>> resultados = database.buscarPorParametros("order_products", new String[]{"id", "order_id", "product_id", "product_quantity"}, parametros);
+
+        List<ProductEntity> productEntityList = new ArrayList<>();
+
+        resultados.forEach(row ->{
+            productEntityList.add(findById(
+                    ((Number) row.get("product_id")).longValue()
+            ));
+        });
+
+        return productEntityList;
     }
 
     @Override

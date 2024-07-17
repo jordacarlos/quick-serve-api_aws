@@ -2,8 +2,6 @@ package br.com.fiap.techchallenge.quickserveapi.Refatorar.api;
 
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.entities.CustomerEntity;
 import br.com.fiap.techchallenge.quickserveapi.Refatorar.usecases.CustomerUseCases;
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.request.CustomerUpdate;
-import br.com.fiap.techchallenge.quickserveapi.application.adapters.input.response.CustomerModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +49,7 @@ public class Customer{
 
     @PutMapping("/{id}")
     public CustomerEntity update(@PathVariable Long id, @RequestBody @Valid CustomerEntity customerInput) {
+        customerInput.setId(id);
         return this.customerUseCases.update(id, customerInput);
     }
 }
