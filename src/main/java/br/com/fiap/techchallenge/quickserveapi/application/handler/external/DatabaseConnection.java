@@ -58,58 +58,7 @@ public class DatabaseConnection implements dbconnection {
         return primaryKeyColumn;
     }
 
-    public List<Map<String, Object>> executarQuery(String query, ParametroBd[] parametros, String[] campos) {
-        List<Map<String, Object>> resultados = new ArrayList<>();
 
-        try (Connection connection = connect();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-            if (parametros != null) {
-                for (int i = 0; i < parametros.length; i++) {
-                    preparedStatement.setObject(i + 1, parametros[i].getValor());
-                }
-            }
-            //System.out.println("Query antes da execução: " + preparedStatement); // Verifica a query completa antes de executar
-
-            if (query.trim().toUpperCase().startsWith("SELECT")) {
-                ResultSet resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    Map<String, Object> row = new HashMap<>();
-                    for (String campo : campos) {
-                        row.put(campo, resultSet.getObject(campo));
-                    }
-                    resultados.add(row);
-                }
-            } else if (query.trim().toUpperCase().startsWith("INSERT")) {
-                ResultSet resultSet = preparedStatement.executeQuery();
-
-                if (resultSet.next()) {
-                    Map<String, Object> row = new HashMap<>();
-                    row.put("id", resultSet.getObject(1));
-                    resultados.add(row);
-                } else {
-                    throw new RuntimeException("Nenhum ID retornado pela operação de inserção.");
-                }
-            } else {
-                int affectedRows = preparedStatement.executeUpdate();
-
-                if (affectedRows <= 0) {
-                    Map<String, Object> row = new HashMap<>();
-                    row.put("Mensagem", "Operação não foi executada, número de registros afetados foi: " + affectedRows);
-                    resultados.add(row);
-                } else {
-                    Map<String, Object> row = new HashMap<>();
-                    row.put("Mensagem", "Operação bem-sucedida, número de registros afetados: " + affectedRows);
-                    resultados.add(row);
-                }
-            }
-        } catch (SQLException e) {
-            Map<String, Object> row = new HashMap<>();
-            row.put("Erro", "Erro na operação: " + e.getMessage());
-            resultados.add(row);
-        }
-        return resultados;
-    }
 
     public List<Map<String, Object>> Inserir(String tabela, String[] campos, ParametroBd[] parametros) {
         StringBuilder query = new StringBuilder("INSERT INTO ");
@@ -204,6 +153,8 @@ public class DatabaseConnection implements dbconnection {
         return executarQuery(query.toString(), parametros,campos);
     }
 
+
+
     public List<Map<String, Object>> buscarPorParametros(String tabela, String[] campos, ParametroBd[] parametros) {
         List<Map<String, Object>> resultados = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT ");
@@ -236,4 +187,131 @@ public class DatabaseConnection implements dbconnection {
 
         return executarQuery(query.toString(), parametros, campos);
     }
+
+
+    public List<Map<String, Object>> executarQuery(String query, ParametroBd[] parametros, String[] campos) {
+        List<Map<String, Object>> resultados = new ArrayList<>();
+
+        try (Connection connection = connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            if (parametros != null) {
+                for (int i = 0; i < parametros.length; i++) {
+                    if (parametros[i].getValor() instanceof String) {
+                        preparedStatement.setString(i + 1, (String) parametros[i].getValor());
+                    } else if (parametros[i].getValor() instanceof Integer) {
+                        preparedStatement.setInt(i + 1, (Integer) parametros[i].getValor());
+                    } else if (parametros[i].getValor() instanceof Long) {
+                        preparedStatement.setLong(i + 1, (Long) parametros[i].getValor());
+                    } else {
+                        preparedStatement.setObject(i + 1, parametros[i].getValor());
+                    }
+                }
+            }
+
+            //System.out.println("Query antes da execução: " + preparedStatement); // Verifica a query completa antes de executar
+
+            if (query.trim().toUpperCase().startsWith("SELECT")) {
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    for (String campo : campos) {
+                        row.put(campo, resultSet.getObject(campo));
+                    }
+                    resultados.add(row);
+                }
+            } else if (query.trim().toUpperCase().startsWith("INSERT")) {
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("id", resultSet.getObject(1));
+                    resultados.add(row);
+                } else {
+                    throw new RuntimeException("Nenhum ID retornado pela operação de inserção.");
+                }
+            } else {
+                int affectedRows = preparedStatement.executeUpdate();
+
+                if (affectedRows <= 0) {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("Mensagem", "Operação não foi executada, número de registros afetados foi: " + affectedRows);
+                    resultados.add(row);
+                } else {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("Mensagem", "Operação bem-sucedida, número de registros afetados: " + affectedRows);
+                    resultados.add(row);
+                }
+            }
+        } catch (SQLException e) {
+            Map<String, Object> row = new HashMap<>();
+            row.put("Erro", "Erro na operação: " + e.getMessage());
+            resultados.add(row);
+        }
+        return resultados;
+    }
+
+
+
+    public List<Map<String, Object>> buscarPorFiltros(String tabela, String[] campos, ParametroBd[] parametros, String[] filtros, Map<String, Integer> caseFiltros, String defaultOrder) {
+        List<Map<String, Object>> resultados = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT ");
+
+        // Adiciona os campos na query
+        if (campos == null || campos.length == 0) {
+            query.append("*");
+        } else {
+            for (int i = 0; i < campos.length; i++) {
+                query.append(campos[i]);
+                if (i < campos.length - 1) {
+                    query.append(", ");
+                }
+            }
+        }
+
+        // Adiciona a tabela na query
+        query.append(" FROM ").append(tabela);
+
+        // Adiciona a cláusula WHERE com parâmetros
+        if (parametros != null && parametros.length > 0) {
+            query.append(" WHERE ");
+            for (ParametroBd parametro : parametros) {
+                query.append(parametro.getCampo()).append(" != ?");
+            }
+        }
+        // Adiciona a cláusula ORDER BY
+        if (caseFiltros != null && !caseFiltros.isEmpty()) {
+            for (ParametroBd parametro : parametros) {
+                query.append(" ORDER BY CASE ").append(parametro.getCampo());
+            }
+            for (Map.Entry<String, Integer> entry : caseFiltros.entrySet()) {
+                query.append(" WHEN '").append(entry.getKey()).append("' THEN ").append(entry.getValue()).append(" ");
+            }
+            query.append("END");
+            if (defaultOrder != null && !defaultOrder.isEmpty()) {
+                query.append(", ").append(defaultOrder);
+            }
+        } else if (filtros != null && filtros.length > 0) {
+            query.append(" ORDER BY ");
+            for (int i = 0; i < filtros.length; i++) {
+                query.append(filtros[i]);
+                if (i < filtros.length - 1) {
+                    query.append(", ");
+                }
+            }
+        } else if (defaultOrder != null && !defaultOrder.isEmpty()) {
+            query.append(" ORDER BY ").append(defaultOrder);
+        }
+
+        // Exibe a query construída
+        System.out.println("Query construída: " + query.toString());
+
+        // Executa a query com todos os parâmetros e campos
+        return executarQuery(query.toString(), parametros, campos);
+    }
+
+
+
+
+
 }

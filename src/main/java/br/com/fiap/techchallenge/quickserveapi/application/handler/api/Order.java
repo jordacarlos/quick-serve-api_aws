@@ -42,4 +42,9 @@ public class Order {
     public String checkPaymentStatus(@PathVariable Long id) {
         return this.orderController.checkPaymentStatus(id);
     }
+
+    @GetMapping("/list")
+    public List<OrderEntity> listByFilters() {
+        return this.orderController.listByFilters();
+    }
 }

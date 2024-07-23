@@ -29,4 +29,7 @@ public class OrderController {
     public String checkPaymentStatus(Long id){
         return orderCase.checkPaymentStatus(id);
     }
+    public List<OrderEntity> listByFilters(){
+        return orderCase.listByFilters();
+    }
 }

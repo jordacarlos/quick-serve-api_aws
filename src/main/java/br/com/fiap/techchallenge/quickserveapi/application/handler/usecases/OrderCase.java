@@ -7,10 +7,7 @@ import br.com.fiap.techchallenge.quickserveapi.application.handler.gateway.Gatew
 import br.com.fiap.techchallenge.quickserveapi.application.handler.interfaces.ParametroBd;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OrderCase {
 
@@ -107,4 +104,34 @@ public class OrderCase {
 
         return OrderAdapter.mapToJson(resultados);
     }
+
+    public List<OrderEntity> listByFilters() {
+        String tabela = "orders";
+        String[] campos = {"order_id", "status", "customer_id", "total_order_value", "payment_status"};
+        ParametroBd[] parametros = {new ParametroBd("status", "FINALIZADO")}; // Exemplo de parâmetro para cláusula WHERE
+        String[] filtros = {}; // Nenhum filtro adicional para ordenação padrão
+
+        // Mapeamento do case para a ordenação
+        Map<String, Integer> caseFiltros = new HashMap<>();
+        caseFiltros.put("PRONTO", 1);
+        caseFiltros.put("EM_PREPARACAO", 2);
+        caseFiltros.put("RECEBIDO", 3);
+
+        List<Map<String, Object>> resultados = gateway.findByFilters(tabela, campos, parametros, filtros, caseFiltros, "order_id DESC");
+
+        ProductCase productCase = new ProductCase(this.gateway);
+
+        List<OrderEntity> orders = OrderAdapter.mapToOrderEntityList(resultados);
+        orders.forEach(item -> {
+            item.setOrderItems(productCase.findByOrder(item));
+        });
+
+        // Utiliza o adapter para mapear os resultados para ProductEntity
+        return orders;
+    }
+
+
+
+
+
 }
