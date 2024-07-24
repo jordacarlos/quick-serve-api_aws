@@ -2,6 +2,7 @@ package br.com.fiap.techchallenge.quickserveapi.application.handler.api;
 
 import br.com.fiap.techchallenge.quickserveapi.application.handler.controllers.OrderController;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderEntity;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderPaymentStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,5 +47,10 @@ public class Order {
     @GetMapping("/list")
     public List<OrderEntity> listByFilters() {
         return this.orderController.listByFilters();
+    }
+
+    @PutMapping("/payment-approver/{id}/{status}")
+    public OrderEntity paymentApprover(@PathVariable Long id, @PathVariable  OrderPaymentStatusEnum status) {
+        return this.orderController.paymentApprover(id,status);
     }
 }

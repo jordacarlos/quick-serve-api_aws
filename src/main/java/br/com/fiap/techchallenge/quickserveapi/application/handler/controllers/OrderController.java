@@ -1,6 +1,7 @@
 package br.com.fiap.techchallenge.quickserveapi.application.handler.controllers;
 
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderEntity;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderPaymentStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.usecases.OrderCase;
 
 import java.util.List;
@@ -31,5 +32,9 @@ public class OrderController {
     }
     public List<OrderEntity> listByFilters(){
         return orderCase.listByFilters();
+    }
+
+    public OrderEntity paymentApprover(Long id, OrderPaymentStatusEnum status){
+        return orderCase.paymentApprover(id,status);
     }
 }

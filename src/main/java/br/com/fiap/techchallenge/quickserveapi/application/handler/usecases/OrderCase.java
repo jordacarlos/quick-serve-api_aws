@@ -3,6 +3,7 @@ package br.com.fiap.techchallenge.quickserveapi.application.handler.usecases;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.adapters.OrderAdapter;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.controllers.ProductRepositoryImpl;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderEntity;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderPaymentStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.gateway.Gateway;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.interfaces.ParametroBd;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
@@ -130,8 +131,25 @@ public class OrderCase {
         return orders;
     }
 
+    public OrderEntity paymentApprover(Long id, OrderPaymentStatusEnum status) {
+        String tabela = "orders";
+        ParametroBd[] parametrosFind = { new ParametroBd("order_id", id) };
+        String[] camposSelecionados = { "order_id", "status", "customer_id", "total_order_value", "payment_status" };
+        List<Map<String, Object>> ordemEncontrada = gateway.find(tabela, camposSelecionados, parametrosFind);
 
+        if (ordemEncontrada != null && !ordemEncontrada.isEmpty()) {
+            // Parâmetros para atualização
+            ParametroBd[] parametrosUpdate = {
+                    new ParametroBd("payment_status", status.name()),
+                    new ParametroBd("order_id", id),
+            };
 
+            String[] camposParaAtualizar = { "payment_status" };
+            gateway.update(tabela, camposParaAtualizar, parametrosUpdate);
 
+            return findById(id);
+        }
 
+        return OrderAdapter.mapToOrderEntityEntity(ordemEncontrada);
+    }
 }
