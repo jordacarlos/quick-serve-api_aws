@@ -60,9 +60,8 @@ docker push arterodocker/quick-serve-api:2.0.0
 ```
 
 ## Kubernetes
-Os arquivos .yaml de configuração do Kubernetes estão em /pods
-
-Considerando que o Kubernetes está ativo, estes são os comandos para subir a aplicação no Kubernetes:
+Considerando que o Kubernetes está ativo na maquina que irá rodar a aplicação, estes são os comandos para subir a aplicação no Kubernetes.
+No video disponibilizado, tem mais detalhes de como utilizar:
 ```
 cd ./pods
 kubectl apply -f configmap-quick-serve-api.yaml
@@ -78,6 +77,15 @@ kubectl apply -f svc-quick-serve-api.yaml
 kubectl apply -f metrics.yaml
 kubectl apply -f hpa.yaml
 ```
+
+## Entregáveis do item 1 do Tech Challenge
+É o código deste repositório na branch <b>main</b>
+
+## Entregáveis do item 2 do Tech Challenge
+Arquitetura Kubernetes: Link do Miro: https://miro.com/app/board/uXjVKQTr4vM=/
+
+Os arquivos .yaml de configuração do Kubernetes estão em [./pods](pods)
+
 Onde:
 
 <b>configmap-quick-serve-api.yaml:</b> Pod de variaveis de ambiente para API
@@ -93,13 +101,16 @@ Onde:
 <br><b>metrics.yaml:</b> Pod com a configuração de métricas e informações do hostserver
 <br><b>hpa.yaml:</b> Pod de dimensionamento de escalabilidade do pod de API, baseado nas métricas
 
-## Postman Collection
-Disponibilizado o arquivo json em [postman_collection.json](docs%2Fpostman_collection.json)
+## Entregáveis do item 3 do Tech Challenge
 
-## Requisitos de negócio
+### Requisitos de negócio e de Infraestrutura
 Link do Miro: https://miro.com/app/board/uXjVKQTr4vM=/
 
-## Link do video com o passo a passo e demonstração de uso das APIs
-Link: https://youtu.be/q1Q6vLJ4Pic
+### Postman Collection
+Disponibilizado o arquivo json em [postman_collection.json](docs%2Fpostman_collection.json)
+
+### Guia completo com todas as instruções para execução do projeto e a ordem da execução das APIs
+Link do video com o passo a passo e demonstração de uso das APIs: https://youtu.be/q1Q6vLJ4Pic
+
 
 </details>
