@@ -1,13 +1,14 @@
 package br.com.fiap.techchallenge.quickserveapi;
 
-import br.com.fiap.techchallenge.quickserveapi.application.handler.api.Customer;
-import br.com.fiap.techchallenge.quickserveapi.application.handler.controllers.*;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.controllers.CustomerController;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.controllers.OrderController;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.controllers.ProductController;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.external.DatabaseConnection;
-import br.com.fiap.techchallenge.quickserveapi.application.handler.interfaces.CustomerRepository;
-import br.com.fiap.techchallenge.quickserveapi.application.handler.interfaces.OrderRepository;
-import br.com.fiap.techchallenge.quickserveapi.application.handler.interfaces.ProductRepository;
-import br.com.fiap.techchallenge.quickserveapi.application.handler.usecases.*;
-import br.com.fiap.techchallenge.quickserveapi.application.handler.gateway.*;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.gateway.Gateway;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.usecases.CustomerCase;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.usecases.OrderCase;
+import br.com.fiap.techchallenge.quickserveapi.application.handler.usecases.ProductCase;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +16,24 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class QuickServeApiApplication {
 
+	@Value("${spring.datasource.url}")
+	private String springDatasourceUrl;
+
+	@Value("${spring.datasource.username}")
+	private String springDatasourceUserName;
+
+	@Value("${spring.datasource.password}")
+	private String springDatasourcePassword;
+
 	public static void main(String[] args) {
 		SpringApplication.run(QuickServeApiApplication.class, args);
 	}
 
 	@Bean
 	public DatabaseConnection databaseConnection() {
-		String url = "jdbc:postgresql://localhost:5432/quick-serve"; // Verifique se o nome do banco de dados está correto
-		String user = "postgres"; // Verifique o nome do usuário do banco de dados
-		String password = "123456"; // Verifique a senha do usuário do banco de dados
+		String url = this.springDatasourceUrl;
+		String user = this.springDatasourceUserName;
+		String password = this.springDatasourcePassword;
 		return new DatabaseConnection(url, user, password);
 	}
 
