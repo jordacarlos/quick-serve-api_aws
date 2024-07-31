@@ -99,4 +99,7 @@ Disponibilizado o arquivo json em [postman_collection.json](docs%2Fpostman_colle
 ## Requisitos de negócio
 Link do Miro: https://miro.com/app/board/uXjVKQTr4vM=/
 
+## Link do video com o passo a passo e demonstração de uso das APIs
+Link: https://youtu.be/q1Q6vLJ4Pic
+
 </details>
