@@ -1,14 +1,15 @@
 package br.com.fiap.techchallenge.quickserveapi.application.handler.usecases;
 
 import br.com.fiap.techchallenge.quickserveapi.application.handler.adapters.OrderAdapter;
-import br.com.fiap.techchallenge.quickserveapi.application.handler.controllers.ProductRepositoryImpl;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderEntity;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderPaymentStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.gateway.Gateway;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.interfaces.ParametroBd;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class OrderCase {
 

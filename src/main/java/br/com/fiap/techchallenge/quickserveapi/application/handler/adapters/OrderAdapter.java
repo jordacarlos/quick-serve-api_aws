@@ -3,8 +3,8 @@ package br.com.fiap.techchallenge.quickserveapi.application.handler.adapters;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderEntity;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderPaymentStatusEnum;
 import br.com.fiap.techchallenge.quickserveapi.application.handler.entities.OrderStatusEnum;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;

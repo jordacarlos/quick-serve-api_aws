@@ -23,8 +23,10 @@ spec:
           ports:
             - containerPort: 8087
           resources:
+            limits:
+              cpu: "1"
             requests:
-              cpu: 1m
+              cpu: 500m
           env:
             - name: SPRING_PROFILES_ACTIVE_ENVIRONMENT
               valueFrom:
