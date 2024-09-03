@@ -29,3 +29,5 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:latest
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:${{ github.sha }}
+
+          
