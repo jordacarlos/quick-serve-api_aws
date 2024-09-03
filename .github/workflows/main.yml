@@ -19,8 +19,8 @@ jobs:
       - name: Build Docker image
         run: |
           docker buildx build \
-            --tag my-java-app:latest .
+            --tag quick-serve-api:latest .  # Certifique-se de que o nome da imagem está correto
 
       - name: Test Docker image
         run: |
-          docker run --rm quick-serve-api:latest java -version
+          docker run --rm quick-serve-api:latest java -version  # Executa a imagem construída
