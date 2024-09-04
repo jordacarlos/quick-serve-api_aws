@@ -35,3 +35,8 @@ jobs:
         
     - name: Build and run only the quick-serve-api service
       run: docker compose up -d --build quick-serve-api
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker tag fiap-7soat-51/quick-serve-api:1 ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
