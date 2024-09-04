@@ -38,5 +38,7 @@ jobs:
 
     - name: Push Docker image to Docker Hub
       run: |
+        echo "Listing Docker images:"
+        docker image ls 
         docker tag fiap-7soat-51/quick-serve-api:1 ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
