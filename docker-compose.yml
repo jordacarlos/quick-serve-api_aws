@@ -16,8 +16,8 @@ services:
     ports:
       - "${APP_PORT}:8087" #APP_ENVIRONMENT=production
       #- "${APP_PORT}:8088" #APP_ENVIRONMENT=development
-    depends_on:
-      - quick-serve-db
+    #depends_on:
+    #  - quick-serve-db
     networks:
       - network-quick-serve
     deploy:
