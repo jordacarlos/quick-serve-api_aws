@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI with Maven and AWS ECS Deploy
 
 on:
   push:
@@ -8,19 +8,18 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        
+
     - name: Build with Maven
       run: mvn package
 
@@ -33,12 +32,40 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
         
-    - name: Build and run only the quick-serve-api service
-      run: docker compose up -d --build quick-serve-api
-
-    - name: Push Docker image to Docker Hub
+    - name: Build and push Docker image to Docker Hub
       run: |
-        echo "Listing Docker images:"
-        docker image ls 
+        docker image ls
         docker tag fiap-7soat-51/quick-serve-api:0.1 ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Log in to Amazon ECR
+      run: |
+        aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+
+    - name: Build and tag Docker image for ECR
+      run: |
+        docker tag fiap-7soat-51/quick-serve-api:0.1 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/quick-serve-api:latest
+
+    - name: Push Docker image to Amazon ECR
+      run: |
+        docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/quick-serve-api:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Update ECS service to use new image
+      run: |
+        aws ecs update-service \
+          --cluster your-ecs-cluster \
+          --service your-ecs-service \
+          --force-new-deployment \
+          --region us-east-1
