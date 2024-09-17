@@ -32,13 +32,14 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-    - name: Build and run only the quick-serve-api service
-      run: docker compose up -d --build quick-serve-api
+    - name: Build and run Docker containers
+      run: |
+        docker compose -f docker-compose.yml up -d --build
 
     - name: Push Docker image to Docker Hub
       run: |
         echo "Listing Docker images:"
-        docker image ls
+        docker image ls 
         docker tag fiap-7soat-51/quick-serve-api:0.1 ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
 
@@ -47,7 +48,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Adicione esta linha
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Adicione esta linha se necessário
         aws-region: us-east-1
 
     - name: Log in to Amazon ECR
@@ -61,16 +62,6 @@ jobs:
     - name: Push Docker image to Amazon ECR
       run: |
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/quick-serve-api:latest
-
-    - name: Deploy Serverless Application
-      uses: serverless/github-action@v2
-      with:
-        args: deploy
-      env:
-        SERVERLESS_PLATFORM_VENDOR: aws
-        SERVERLESS_DISABLE_AUTO_UPDATE: true
-        SLS_DISABLE_AUTO_UPDATE: true
-        SERVERLESS_PLATFORM_DISABLE: true
 
   deploy:
     needs: build
@@ -89,5 +80,5 @@ jobs:
 
     - name: Deploy to EKS
       run: |
-        kubectl apply -f k8s/docker-compose.yaml 
-        kubectl apply -f k8s/node-service.yaml
+        kubectl apply -f k8s/docker-compose.yaml
+        
