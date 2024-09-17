@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  CLUSTER_NAME: quick-serve-api
+  AWS_REGION: us-east-1
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -54,11 +58,11 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        aws-region: ${{env.AWS_REGION}}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
     - name: Update kube config
-      run: aws eks update-kubeconfig --name quick-serve-api --region us-east-1
+      run: aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
 
     - name: Apply Kubernetes configuration
       run: |
