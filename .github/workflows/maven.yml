@@ -38,7 +38,7 @@ jobs:
     - name: Push Docker image to Docker Hub
       run: |
         echo "Listing Docker images:"
-        docker image ls 
+        docker image ls
         docker tag fiap-7soat-51/quick-serve-api:0.1 ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/quick-serve-api:1
 
@@ -49,7 +49,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}  # Adicione esta linha
         aws-region: us-east-1
-        
+
     - name: Log in to Amazon ECR
       run: |
         aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
@@ -62,10 +62,13 @@ jobs:
       run: |
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/quick-serve-api:latest
 
+    - name: Change directory to Serverless service
+      run: cd path/to/your/serverless/service  # Atualize com o caminho correto para o diretório do serviço Serverless
+
     - name: Deploy Serverless Application
       uses: serverless/github-action@v2
       with:
-        args: deploy --disable-rollback
+        args: deploy
       env:
         SERVERLESS_PLATFORM_VENDOR: aws
         SERVERLESS_DISABLE_AUTO_UPDATE: true
