@@ -66,4 +66,4 @@ jobs:
 
     - name: Deploy to EKS
       run: |
-        kubectl apply --validate=false -f infra/deployment/deployment_api.yaml
+        kubectl apply --validate=false -f docker-compose.yml
