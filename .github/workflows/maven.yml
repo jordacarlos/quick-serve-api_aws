@@ -64,6 +64,11 @@ jobs:
     - name: Update kube config
       run: aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-    - name: Deploy to EKS
+    - name: Apply Kubernetes configuration
       run: |
         kubectl apply -f pods/quick-serve-api.yaml
+
+    - name: Verify Deployment
+      run: |
+        kubectl get deployments
+        kubectl get pods
