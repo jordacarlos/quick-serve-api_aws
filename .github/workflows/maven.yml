@@ -62,9 +62,6 @@ jobs:
       run: |
         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/quick-serve-api:latest
 
-    - name: Change directory to Serverless service
-      run: cd path/to/your/serverless/service  # Atualize com o caminho correto para o diretório do serviço Serverless
-
     - name: Deploy Serverless Application
       uses: serverless/github-action@v2
       with:
