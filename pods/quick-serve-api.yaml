@@ -43,16 +43,16 @@ spec:
                 secretKeyRef:
                   name: quick-serve-api-secret
                   key: SPRING_DATASOURCE_URL
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: quick-serve-db-secret
-                  key: POSTGRES_USER
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: quick-serve-db-secret
-                  key: POSTGRES_PASSWORD
+            #- name: SPRING_DATASOURCE_USERNAME
+            #  valueFrom:
+            #    secretKeyRef:
+            #      name: quick-serve-db-secret
+            #      key: POSTGRES_USER
+            #- name: SPRING_DATASOURCE_PASSWORD
+            #  valueFrom:
+            #    secretKeyRef:
+            #      name: quick-serve-db-secret
+            #      key: POSTGRES_PASSWORD
             - name: SPRING_DATASOURCE_DRIVER
               valueFrom:
                 configMapKeyRef:
