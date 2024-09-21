@@ -7,9 +7,9 @@ on:
     branches: [ "main" ]
 
 env:
-  CLUSTER_NAME: quick-serve-api3
+  CLUSTER_NAME: quick-serve-api4
   AWS_REGION: us-east-1
-  NODEGROUP_NAME: quick-serve-api3-groups
+  NODEGROUP_NAME: quick-serve-api4-groups
 
 jobs:
   create-cluster:
@@ -79,7 +79,7 @@ jobs:
     - name: Wait for EKS Node Group to be Active
       if: env.nodegroup_exists == 'false'
       run: |
-        aws eks wait nodegroup-active --cluster-name $CLUSTER_NAME --nodegroup-name quick-serve-api-groups --region $AWS_REGION
+        aws eks wait nodegroup-active --cluster-name $CLUSTER_NAME --nodegroup-name $NODEGROUP_NAME --region $AWS_REGION
 
   build-and-deploy:
     runs-on: ubuntu-latest
