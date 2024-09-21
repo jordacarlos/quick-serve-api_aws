@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  CLUSTER_NAME: quick-serve-api2
+  CLUSTER_NAME: quick-serve-api
   AWS_REGION: us-east-1
 
 jobs:
@@ -26,13 +26,12 @@ jobs:
     - name: Create EKS Cluster
       run: |
         aws eks create-cluster \
-          --name $CLUSTER_NAME \
-          --role-arn arn:aws:iam::133489939751:role/LabRole \
-          --resources-vpc-config subnetIds=subnet-0ccd3fe783de143a2,subnet-0fa695d42ad8afd9d,securityGroupIds=sg-0e67dd9b20c5af14c \
-          --kubernetes-version 1.29 \
-          --vpc-config endpointPublicAccess=true,endpointPrivateAccess=true,publicAccessCidrs="0.0.0.0/0" \
-          --logging types=api,audit,authenticator,controllerManager,scheduler \
-          --service-ipv4-cidr 10.100.0.0/16
+        --name $CLUSTER_NAME \
+        --role-arn arn:aws:iam::133489939751:role/LabRole \
+        --resources-vpc-config subnetIds=subnet-0ccd3fe783de143a2,subnet-0fa695d42ad8afd9d,securityGroupIds=sg-0e67dd9b20c5af14c,endpointPublicAccess=true,endpointPrivateAccess=true,publicAccessCidrs="0.0.0.0/0" \
+        --kubernetes-version 1.29 \
+        --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}'
+
 
   build-and-deploy:
     runs-on: ubuntu-latest
