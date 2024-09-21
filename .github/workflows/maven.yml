@@ -23,19 +23,36 @@ jobs:
         aws-region: ${{env.AWS_REGION}}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
+    - name: Check if EKS Cluster Exists
+      id: check-cluster
+      run: |
+        if aws eks describe-cluster --name $CLUSTER_NAME --region $AWS_REGION > /dev/null 2>&1; then
+          echo "Cluster exists."
+          echo "::set-output name=cluster_exists::true"
+        else
+          echo "Cluster does not exist."
+          echo "::set-output name=cluster_exists::false"
+        fi
+
     - name: Create EKS Cluster
+      if: steps.check-cluster.outputs.cluster_exists == 'false'
       run: |
         aws eks create-cluster \
-        --name $CLUSTER_NAME \
-        --role-arn arn:aws:iam::133489939751:role/LabRole \
-        --resources-vpc-config subnetIds=subnet-0ccd3fe783de143a2,subnet-0fa695d42ad8afd9d,securityGroupIds=sg-0e67dd9b20c5af14c,endpointPublicAccess=true,endpointPrivateAccess=true,publicAccessCidrs="0.0.0.0/0" \
-        --kubernetes-version 1.29 \
-        --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}'
+          --name $CLUSTER_NAME \
+          --role-arn arn:aws:iam::133489939751:role/LabRole \
+          --resources-vpc-config subnetIds=subnet-0ccd3fe783de143a2,subnet-0fa695d42ad8afd9d,securityGroupIds=sg-0e67dd9b20c5af14c,endpointPublicAccess=true,endpointPrivateAccess=true,publicAccessCidrs="0.0.0.0/0" \
+          --kubernetes-version 1.29 \
+          --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}'
+
+    - name: Wait for EKS Cluster to be Active
+      if: steps.check-cluster.outputs.cluster_exists == 'false'
+      run: |
+        aws eks wait cluster-active --name $CLUSTER_NAME --region $AWS_REGION
 
 
   build-and-deploy:
     runs-on: ubuntu-latest
-    needs: create-cluster  # Garante que este bloco seja executado após o bloco de criação do cluster
+    needs: create-cluster  # Garantindo que este bloco seja executado após o bloco de criação do cluster
 
     steps:
     - uses: actions/checkout@v4
