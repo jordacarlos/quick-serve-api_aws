@@ -107,11 +107,13 @@ jobs:
 
     - name: Apply Kubernetes configuration
       run: |
-        kubectl apply -f pods/configmap-quick-serve-api.yaml
-        kubectl apply -f pods/secret-quick-serve-api.yaml
-        kubectl apply -f pods/quick-serve-api.yaml
-        kubectl apply -f pods/svc-quick-serve-api.yaml
-        kubectl apply -f pods/secret-quick-serve-db.yaml
+        kubectl apply -f pod/svc-quick-serve-api.yaml
+        kubectl apply -f pod/configmap-quick-serve-api.yaml
+        kubectl apply -f pod/configmap-quick-serve-db.yaml
+        kubectl apply -f pod/secret-quick-serve-api.yaml
+        kubectl apply -f pod/secret-quick-serve-db.yaml
+        kubectl apply -f pod/quick-serve-api.yaml
+        kubectl apply -f pod/svc-quick-serve-api.yaml
 
     - name: Verify Deployment
       run: |
