@@ -9,7 +9,6 @@ on:
 env:
   CLUSTER_NAME: quick-serve-api4
   AWS_REGION: us-east-1
-  NODEGROUP_NAME: quick-serve-api4-groups
 
 jobs:
   check-cluster:
