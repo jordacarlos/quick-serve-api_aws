@@ -7,11 +7,12 @@ on:
     branches: [ "main" ]
 
 env:
-  CLUSTER_NAME: quick-serve-api4
+  CLUSTER_NAME: EKS-QUICK-SERVE
   AWS_REGION: us-east-1
+  NODEGROUP_NAME: quick-serve
 
 jobs:
-  check-cluster:
+  create-cluster:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,9 +35,55 @@ jobs:
           echo "cluster_exists=false" >> $GITHUB_ENV
         fi
 
+    - name: Create EKS Cluster
+      if: env.cluster_exists == 'false'
+      run: |
+        aws eks create-cluster \
+          --name $CLUSTER_NAME \
+          --role-arn arn:aws:iam::133489939751:role/LabRole \
+          --resources-vpc-config subnetIds=subnet-0ccd3fe783de143a2,subnet-0fa695d42ad8afd9d,securityGroupIds=sg-0e67dd9b20c5af14c,endpointPublicAccess=true,endpointPrivateAccess=true,publicAccessCidrs="0.0.0.0/0" \
+          --kubernetes-version 1.29 \
+          --logging '{"clusterLogging":[{"types":["api","audit","authenticator","controllerManager","scheduler"],"enabled":false}]}'
+
+    - name: Wait for EKS Cluster to be Active
+      if: env.cluster_exists == 'false'
+      run: |
+        aws eks wait cluster-active --name $CLUSTER_NAME --region $AWS_REGION
+
+    - name: Check if EKS Node Group Exists
+      id: check-nodegroup
+      run: |
+        if aws eks describe-nodegroup --cluster-name $CLUSTER_NAME --nodegroup-name $NODEGROUP_NAME > /dev/null 2>&1; then
+          echo "Node Group exists."
+          echo "nodegroup_exists=true" >> $GITHUB_ENV
+        else
+          echo "Node Group does not exist."
+          echo "nodegroup_exists=false" >> $GITHUB_ENV
+        fi
+
+    - name: Create EKS Node Group
+      if: env.nodegroup_exists == 'false'
+      run: |
+        aws eks create-nodegroup \
+          --cluster-name $CLUSTER_NAME \
+          --nodegroup-name $NODEGROUP_NAME \
+          --subnets subnet-0fa695d42ad8afd9d subnet-0ccd3fe783de143a2 \
+          --node-role arn:aws:iam::133489939751:role/LabRole \
+          --scaling-config minSize=1,maxSize=5,desiredSize=2 \
+          --instance-types t3.medium \
+          --ami-type AL2_x86_64 \
+          --disk-size 20 \
+          --capacity-type ON_DEMAND \
+          --update-config maxUnavailable=1
+
+    - name: Wait for EKS Node Group to be Active
+      if: env.nodegroup_exists == 'false'
+      run: |
+        aws eks wait nodegroup-active --cluster-name $CLUSTER_NAME --nodegroup-name $NODEGROUP_NAME --region $AWS_REGION
+
   build-and-deploy:
     runs-on: ubuntu-latest
-    needs: check-cluster  
+    needs: create-cluster  
 
     steps:
     - uses: actions/checkout@v4
